@@ -1,4 +1,4 @@
-baseurl = "https://doks.netlify.app/"
+baseurl = "https://www.mlab.cz/"
 canonifyURLs = false
 disableAliases = true
 disableHugoGeneratorInject = true
@@ -8,9 +8,17 @@ enableRobotsTXT = true
 paginate = 7
 rssLimit = 10
 
+post_asset_folder= true
+[marked]
+  prependRoot = true
+  postAsset = true
+
+
+disablePathToLower = true
+
 # Multilingual
 defaultContentLanguage = "en"
-disableLanguages = ["de", "nl"]
+disableLanguages = ["cz"]
 # defaultContentLanguageInSubdir = true
 
 # add redirects/headers
@@ -52,7 +60,7 @@ rel  = "sitemap"
     maxAge = "10s"
 
 [sitemap]
-  changefreq = "weekly"
+  changefreq = "daily"
   filename = "sitemap.xml"
   priority = 0.5
 
@@ -64,6 +72,9 @@ rel  = "sitemap"
 [permalinks]
   blog = "/blog/:title/"
 # docs = "/docs/1.0/:sections[1:]/:title/"
+  modules = "/module/:title"
+  categories = "/modules/:slug/"
+  tags = "/modules/tags/:slug/"
 
 [minify.tdewolff.html]
   keepWhitespace = false
@@ -108,3 +119,6 @@ rel  = "sitemap"
   [[module.mounts]]
     source = "node_modules/@hyas/images/layouts"
     target = "layouts"
+  [[module.mounts]]
+    source = "README.md"
+    target = "content/index.md"
