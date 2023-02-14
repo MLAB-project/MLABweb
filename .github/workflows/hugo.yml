@@ -47,7 +47,7 @@ jobs:
         run: |
           cd tools/
           ./obtain_repos_data.sh
-          cp modules/* ../content/en/modules/
+          cp modules/* ../content/en/modules/ || true
           cd ..
           
       - name: Install Dart Sass Embedded
