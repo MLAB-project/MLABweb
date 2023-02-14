@@ -46,7 +46,7 @@ jobs:
       - name: Prepare modules
         run: |
           cd tools/
-          obtain_repos_data.sh
+          ./obtain_repos_data.sh
           cp modules/* ../content/en/modules/
           cd ..
           
