@@ -39,7 +39,7 @@ for i in $repos; do
         echo "---" >> index.md;
         cat README.md >> index.md;
 
-        find . -type f -not \( -name '*jpg' -or -name '*svg' -or -name '*.pdf' -or -name '*.jpg' -or -name '*.md' -or -name '*.png' \) -delete
+        find . -type f -not \( -name '*jpg' -or -name '*svg' -or -name '*.pdf' -or -name '*.jpg' -or -name '*.md' -or -name '*.png' -or -name '*.html' \) -delete
 
       else
         echo "Mazu.."
