@@ -1,4 +1,21 @@
 {{ define "main" }}
+
+<style>
+.home_static_background {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: center 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover !important;
+}
+</style>
+
 <section class="section container-fluid mt-n3 pb-3">
   <div class="row justify-content-center">
     <div class="col-lg-12 text-center">
@@ -46,8 +63,108 @@
       </div>
     </div>
   </section>
+
+
+
+  <section class="section section-sm section-featured mt-3 bg-light ">
+    <div class="container">
+
+
+    </div>
+  </section>
+
+
+
+  <section class="section section-sm section-featured mt-3">
+    <div class="container">
+      <h3> Selected modules </h3>
+      <div class="row">
+        {{ range where (where .Site.Pages "Type" "modules") "Params.homepage" true }}
+
+          <div class="col-5 p-1">
+            <div class="card">
+              {{- .Scratch.Set "fillImage" "1270x620 Center" -}}
+              {{ if isset .Params "images" }}
+                <img class="card-img-top" src="{{.Permalink}}{{ index .Params.images 0 }}" alt="{{ index .Params.images 0 }}">
+              {{ end }}
+              <div class="card-body">
+                <article>
+                  <h2 class="h3"><a class="stretched-link text-body" href="{{ .Permalink }}">{{ .Params.title }}</a></h2>
+                  <p>{{ .Params.excerpt | safeHTML }}</p>
+                  {{/* partial "main/blog-meta.html" . -*/}}
+                </article>
+              </div>
+            </div>
+          
+        </div>
+        {{ end }}
+      </div>
+      <p> This list contains a few selected modules, all modules in the MLAB kit can be found on the Modules page. </p>
+    </div>
+  </section>
+
+  <section class="section p-0">
+    <div class="home_static_background" style="height: 200pt; background-image: url('/images/MLAB_board.jpg');"> </div>
+  </section>
+
+  <section class="section section-sm section-featured mt-0 bg-light ">
+    <div class="container-fluid">
+  
+      <div class="row justify-content-center  text-center">
+        <h2 class="h2 col-12">Cooperation</h2>
+        <p class="col-lg-7"> There are still many things worth of improving or inventing. Enthusiastic people are always in shortage. Do you want to contribute to the development? </p>
+      </div>      
+
+      <div class="row justify-content-center text-center mt-4">
+        <div class="col-lg-5">
+          <h2 class="h4">I have my own module that I want to share with others.</h2>
+          <p> Even though MLAB is an open-source concept, it is not possible to add a new module without complying with a convention. Therefore it is a good idea to read a few words about how to design a good MLAB module.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">I would love to contribute, but I don't have any ideas.</h2>
+          <p> We still have a plenty of ideas and are ready to share them. Simply choose from our wiki.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">I don't know how to develop modules</h2>
+          <p>There is no need to be ashamed - do not hesitate to contact us. We will seek to find a common goal. The biggest mistake would be not to try.</p>
+        </div>
+      </div>
+
+
+      <div class="row justify-content-center  text-center mt-4">
+        <h2 class="h2 col-12">Professional support and purchase of modules?</h2>
+        <p class="col-lg-7">Do you need one of the modules and do not want to make it yourself? Do you have a problem for which the solution from MLAB is optimal, but you want to solve the problem for you? The official manufacturer and seller of the module module MLAB is the <a href="https://www.ust.cz/UST-mlab/">Universal Scientific Technologies</a> company, which is able to sell you a MLAB modules or solve whole assemblies from the MLAB modules. </p>
+      </div> 
+
+    </div>
+  </section>
+
+
+  <section class="section p-0">
+    <div class="home_static_background" style="height: 200pt; background-image: url('/images/MLAB_board.jpg');"> </div>
+  </section>
+
+
+
+  <section class="section">
+    <div class="row justify-content-center">
+    <div class="col-lg-12 text-center">
+      <h1 class="h3">Partners</h1>
+    </div>
+    <div class="col-lg-9 col-xl-8 text-center">
+      <p class="lead">MLAB users and supporters</p>
+      
+    </div>
+  </div>
+  </section>
+
+
+
+
   {{ end }}
 {{ end }}
+
+
 
 {{ define "sidebar-footer" }}
 <section class="section section-sm container-fluid">
