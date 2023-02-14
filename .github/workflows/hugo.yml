@@ -50,8 +50,8 @@ jobs:
           cp -r modules/* ../content/en/modules/ || true
           cd ..
           
-      - name: Install Dart Sass Embedded
-        run: sudo snap install dart-sass-embedded
+ #     - name: Install Dart Sass Embedded
+ #       run: sudo snap install dart-sass-embedded
 
 
       - name: Setup Pages
