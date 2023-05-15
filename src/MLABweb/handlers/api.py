@@ -16,9 +16,9 @@ from tornado import escape
 from tornado import httpserver
 from tornado import options
 from tornado import web
-from tornado.web import asynchronous
+#from tornado.web import asynchronous
 from tornado import gen
-import git
+#import git
 from git import Repo, Actor
 import os
 from PIL import Image
@@ -31,7 +31,7 @@ from . import _sql, BaseHandler, sendMail
 import subprocess
 
 class module(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, module=None):
         self.set_header('Content-Type', 'application/json')
 
@@ -44,7 +44,7 @@ class module(BaseHandler):
 
 
 class modules(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, module = None):
         self.set_header('Content-Type', 'application/json')
 

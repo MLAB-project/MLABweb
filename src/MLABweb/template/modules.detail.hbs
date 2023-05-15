@@ -29,7 +29,6 @@ $(document).ready(function() {
 </script>
 
 
-
 {% for cat in module_data.get('category[]', []) %}
 
 <nav class="breadcrumb">
@@ -60,11 +59,11 @@ $(document).ready(function() {
         <h2 class="card-title">{{module_data['name']}}</h2>
         <h4 class="card-subtitle mb-2 text-muted">{{module_data[_('longname_cs')]}}</h4>
         <!-- <h4 class="card-subtitle mb-2 text-muted">{{module_data['longname_en']}}</h4> -->
-        <p class="card-text">{{module_data[_('short_cs')]}}</p>
-        <a href="https://github.com/MLAB-project/Modules/tree/master/{{module_data['root']}}"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
-        {# <a href="https://github.com/roman-dvorak/Modules/tree/master/{{module_data['root']}}"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a> #}
-        {% if module_data['wiki'] != None and str(module_data['wiki']) != 'None'%} <a href="{{module_data['wiki']}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% else %} <a href="http://wiki.mlab.cz/doku.php?id={{_("lang_short")}}:{{module_data['name'][:-3]}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
-        {% if module_data['ust'] != None and str(module_data['ust']) != 'None'%} <a href="{{module_data['ust']}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
+        <!-- <p class="card-text">{{module_data}}</p> -->
+        <a href="{{ assembly_gh_link(module_data) }}"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+
+        {% if module_data.get('wiki', None) != None and str(module_data.get('wiki', '')) != 'None'%} <a href="{{module_data.get('wiki', '')}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% else %} <a href="http://wiki.mlab.cz/doku.php?id={{_("lang_short")}}:{{module_data['name'][:-3]}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('ust', None) != None and str(module_data.get('ust', '')) != 'None'%} <a href="{{module_data.get('ust', '')}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
         {% if current_user and current_user['is_staff'] %}<a href="/module/{{module_data.get('name', '')}}/edit"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></a> {% end %}
       </div>
     </div>
@@ -118,14 +117,14 @@ $(document).ready(function() {
     </div>
       <div class="card-block tab-content">
         <div class="tab-pane" id="cs" role="tabpanel" style="padding: 10pt;">
-        {% raw module_data['doc_cs'] %}
+        {% raw module_data.get('doc_cs') %}
         </div>
         <div class="tab-pane active" id="en" role="tabpanel" style="padding: 10pt;">
-        {% raw module_data['doc_en'] %}
+        {% raw module_data.get('doc_en') %}
         </div>
         <div class="tab-pane" id="download" role="tabpanel" style="padding: 10pt;">
             {% for documet in documents %}
-              <li><a href="https://github.com/MLAB-project/Modules/tree/master/{{documet[19:]}}">{{documet[19:]}}</a></li>
+              <li><a href="{{ assembly_gh_link(module_data) }}/{{documet[19:]}}">{{documet[19:]}}</a></li>
             {% end %}
         </div>
       </div>

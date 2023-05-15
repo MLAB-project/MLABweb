@@ -124,6 +124,8 @@ a.selected{
 
             <div style="margin-bottom: 8pt;">{% for tag in module.get('category[]', []) %}
               <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
+            {%end%}{% for tag in module.get('tags', []) %}
+              <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
             {%end%}</div>
 
 	      	<h4 class="card-title"><a href="/module/{{module['_id']}}/">{{module['_id']}}</a></h4>

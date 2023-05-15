@@ -10,8 +10,7 @@ import json
 import datetime
 import smtplib
 
-import urllib
-import urllib2
+
 import requests
 
 from requests_oauthlib import OAuth2Session

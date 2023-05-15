@@ -16,9 +16,9 @@ from tornado import escape
 from tornado import httpserver
 from tornado import options
 from tornado import web
-from tornado.web import asynchronous
+#from tornado.web import asynchronous
 from tornado import gen
-import git
+#import git
 from git import Repo, Actor
 import os
 from PIL import Image
@@ -30,24 +30,34 @@ from w3lib.html import replace_entities
 from . import _sql, BaseHandler, sendMail
 #import subprocess
 
+def assembly_gh_link(document):
+    if document.get('source', None) == 'yaml':
+        url = document.get('github_url', '')
+        url += '/tree/'
+        url += document.get('github_branch', '')
+
+        return url
+    
+    else:
+        return "https://github.com/MLAB-project/Modules/tree/master/" + document.get('root', '')
 
 class permalink(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, module = None):
         print(module)
         module_data = self.db_web.Modules.find({"_id": module})[0]
         documents = glob2.glob(tornado.options.options.mlab_repos+module_data['root']+"//**/*.pdf")
         images = glob.glob(tornado.options.options.mlab_repos+module_data['root']+"doc/img/*")
-        self.render("modules.detail.hbs", module=module, module_data=module_data, images = images, documents=documents)
+        self.render("modules.detail.hbs", module=module, module_data=module_data, images = images, documents=documents, assembly_gh_link = assembly_gh_link)
 
 class home(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, data=None):
         module_data = self.db_web.Modules.find({ "$and": [ {"$or":[{'status': 2}, {'status':'2'}]}, {'mark': {"$gte": 45}}, {"$where": "this.longname_cs.length > 20"}, {"$where": "this.image.length > 4"}, {'image':{"$not":re.compile("QRcode")}}]})
         self.render("index.hbs", parent=self, modules = module_data)
 
 class module_detail(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, module = None):
         print(module)
         
@@ -56,10 +66,10 @@ class module_detail(BaseHandler):
 
         images = glob.glob(module_path+"/doc/img/*.jpg")
         images.extend(glob.glob(module_path+"/doc/img/*.png"))
-        self.render("modules.detail.hbs", db_web = self.db_web, module=module, module_data=module_data, images = images, documents = glob2.glob(module_path+"//**/*.pdf"))
+        self.render("modules.detail.hbs", db_web = self.db_web, module=module, module_data=module_data, images = images, documents = glob2.glob(module_path+"//**/*.pdf"), assembly_gh_link = assembly_gh_link)
 
 class module_comapare(BaseHandler):
-    @asynchronous
+    #@asynchronous
     def get(self, module = None):
         print(module, "< compare")
         module_data = _sql("SELECT * FROM MLAB.Modules WHERE name='%s'" %(module))[0]
@@ -81,19 +91,21 @@ class modules(BaseHandler):
         if isinstance(input, list): return input
         else: return [input]
 
-    @asynchronous
+    #@asynchronous
     def get(self, category = None):
         print("[MODULES] {}".format(category))
-        status = None
+        status = []
+        statuss = []
+
         if 'status' in self.request.arguments:
-            status = ",".join(self.make_list(self.request.arguments['status']))
-            self.set_cookie("status", status)
-            statuss = status.split(",")
-            status = map(int, statuss)
+            status = [int(n.decode("utf-8")) for n in self.request.arguments['status']]
+
         else:
             statuss = self.get_cookie('status', "2").split(",")
-            status = map(int, statuss)
+            status = list(map(int, statuss))
+
         status = status + statuss
+
         #print "status", status
         #print "category", category
 
@@ -154,7 +166,7 @@ class modules(BaseHandler):
         self.write(dumps(modules))
 
 class modules_overview(BaseHandler):
-    @asynchronous
+    #@asynchronous
     #@tornado.web.authenticated
     def get(self):
         #print("modules overview")

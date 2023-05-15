@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    networks:
+      internal:
+        ipv4_address: 172.10.0.10
+
+  updater:
+    container_name: MLABweb-updater
+    build: .
+    entrypoint:
+      - "python3"
+      - "git_to_mongo.py"
+    volumes:
+      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+    networks:
+      internal:
+        ipv4_address: 172.10.0.11
+
+  mongo:
+    image: "mongo:latest"
+    container_name: "mongo"
+    ports:
+      - "27017:27017"
+    networks:
+      internal:
+        ipv4_address: 172.10.0.14
+    volumes:
+      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.0.0/24

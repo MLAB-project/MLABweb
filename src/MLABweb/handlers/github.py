@@ -35,24 +35,24 @@ class webhooks(BaseHandler):
 
             project_file =  None
             for edit in edits:
-                print edit
+                print(edit)
                 if '.json' in edit:
-                    print "Tady je ASI nejaky upraveny nebo novy modul :)", 
+                    print( "Tady je ASI nejaky upraveny nebo novy modul :)")
                     project_file = edit
                     #project_name = os.path.splitext(os.path.basename(edit))[0]
                     project_name = os.path.basename(os.path.dirname(edit))
                     project_root = os.path.split(edit)[0]
-                    print project_file, project_name
+                    print(project_file, project_name)
                     try:
-                        print 'url', "https://api.github.com/repos/MLAB-project/Modules/contents/"+project_file+"?ref=master"
+                        print( 'url', "https://api.github.com/repos/MLAB-project/Modules/contents/"+project_file+"?ref=master")
                         resp, content = httplib2.Http().request("https://api.github.com/repos/MLAB-project/Modules/contents/"+project_file+"?ref=master")
 
                         file = json.loads(base64.b64decode(json.loads(content)['content']))
-                        print json.dumps(file, indent=4, sort_keys=True)
+                        print( json.dumps(file, indent=4, sort_keys=True))
 
                         modules = self.db_web.Modules.find({"_id": project_name}).count()
                         #print ("MODULES:", modules, "(0 novy modul, 1 Existujici modul)")
-                        print ("MODULES:", modules)
+                        print( ("MODULES:", modules))
 
                         file['root'] = project_root
                         file['name'] = project_name
@@ -70,6 +70,6 @@ class webhooks(BaseHandler):
                         #        %(file['wiki'], file['ust'], file['image'], file['longname_cs'], file['longname_en'], file['short_cs'], file['short_en'], file['doc_cs'], file['doc_en'], file['status'], project_root, project_name))
 
                     except Exception as e:
-                        print "chyba>", e
+                        print( "chyba>", e)
             
             self.write("ACK")

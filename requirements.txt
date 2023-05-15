@@ -1,0 +1,13 @@
+tornado
+pymongo
+requests-oauthlib
+requests
+glob2
+gitpython
+six
+w3lib
+#xhtml2pdf
+httplib2
+Pillow
+qrcode
+pyyaml

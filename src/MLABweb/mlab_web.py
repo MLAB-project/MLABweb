@@ -13,9 +13,9 @@ import calendar
 from handlers import github, admin, auth, api
 from handlers import _sql, BaseHandler
 
-tornado.options.define("port", default=10010, help="port", type=int)
+tornado.options.define("port", default=5000, help="port", type=int)
 tornado.options.define("debug", default=True, help="debug mode")
-tornado.options.define("mlab_repos", default=None, help="Where is MLAB repository stored")
+tornado.options.define("mlab_repos", default='/data/mlab/Modules/', help="Where is MLAB repository stored")
 tornado.options.define("mlabgen", default=None, help="Where is mlabgen repository stored")
 tornado.options.define("github_token", default=None, help="Github Oauth2 token code")
 tornado.options.define("github_secret", default=None, help="Github Oauth2 secret code")
@@ -115,7 +115,7 @@ class WebApp(tornado.web.Application):
 def main():
     import os
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    tornado.options.parse_config_file("/etc/mlab.conf")
+    #tornado.options.parse_config_file("/etc/mlab.conf")
     #tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(WebApp())
     http_server.listen(tornado.options.options.port)
