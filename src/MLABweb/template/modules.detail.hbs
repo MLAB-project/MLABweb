@@ -12,6 +12,41 @@
     padding: 0px;
   }
 
+ 
+
+  .markdown{
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+
+  .markdown img{
+    max-width: 100%;
+  }
+
+  .markdown h1,  .markdown h2, .markdown h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid lightgray;
+    font-weight: 600;
+  }
+
+  .markdown table th, .markdown table td{
+      padding: 6px 13px;
+      border: 1px solid lightgray;
+  }
+
+  .markdown table th{
+    font-weight: 600;
+  }
+
+  .markdown tr:nth-child(even) {background-color: #f6f3f3;} 
+  .markdown tr:hover {background-color: rgb(229, 229, 229);}
+
+
+
+
 </style>
 
 <script type="text/javascript">
@@ -43,10 +78,12 @@ $(document).ready(function() {
   <div class="col-sm-6">
     <div class="card">
 
-      {% if not module_data['image']%}
-      <img class="card-img-top" src="/static/noimage.png">
+      {% if module_data.get('image_title') %}
+        <img class="card-img-top" src="/static/noimage.png" data-src="{{module_data['github_raw']}}/{{module_data['image_title']}}" alt="Module">
+      {% elif module_data.get('image') %}
+        <img class="card-img-top" src="/static/noimage.png" data-src="{{module_data['github_raw']}}/{{module_data['image'][0]}}" alt="Module">
       {% else %}
-      <img class="card-img-top" src="/static/noimage.png" data-src="/repos/{{module_data['root']}}/{{module_data['image']}}" alt="Module">
+      <img class="card-img-top" src="/static/noimage.png" alt="Module">
       {% end %}
 
       <div class="status status-{{module_data['status']}}"></div>
@@ -60,11 +97,23 @@ $(document).ready(function() {
         <h4 class="card-subtitle mb-2 text-muted">{{module_data[_('longname_cs')]}}</h4>
         <!-- <h4 class="card-subtitle mb-2 text-muted">{{module_data['longname_en']}}</h4> -->
         <!-- <p class="card-text">{{module_data}}</p> -->
+
+      </div>
+      <div class="card-block" style="padding: 10pt;border-top: 1px solid rgba(0,0,0,.125);">
+
         <a href="{{ assembly_gh_link(module_data) }}"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
 
-        {% if module_data.get('wiki', None) != None and str(module_data.get('wiki', '')) != 'None'%} <a href="{{module_data.get('wiki', '')}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% else %} <a href="http://wiki.mlab.cz/doku.php?id={{_("lang_short")}}:{{module_data['name'][:-3]}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('wiki', None) != None and str(module_data.get('wiki', '')) != 'None'%} <a href="{{module_data.get('wiki', '')}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
         {% if module_data.get('ust', None) != None and str(module_data.get('ust', '')) != 'None'%} <a href="{{module_data.get('ust', '')}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
-        {% if current_user and current_user['is_staff'] %}<a href="/module/{{module_data.get('name', '')}}/edit"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></a> {% end %}
+        
+        {% if module_data.get('mod_scheme', None) != None and str(module_data.get('mod_scheme', '')) != 'None'%} <a href="{{module_data['github_raw']}}{{module_data.get('mod_scheme', '')}}"><i class="fa fa-map-o fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('mod_ibom', None) != None and str(module_data.get('mod_ibom', '')) != 'None'%} <a href="./ibom"><i class="fa fa-list-alt fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('tindie_url', None) != None and str(module_data.get('tindie_url', '')) != 'None'%} <a href="{{module_data.get('tindie_url', '')}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
+
+
+
+        <span style="float: right;" class="text-muted"> Source: {{module_data.get('source', 'legacy')}} </span>  
+
       </div>
     </div>
   </div>
@@ -91,9 +140,9 @@ $(document).ready(function() {
         </table><br>
         {% end %}
           <div class="">
-          {% for image in images %}
-              <a href="/repos/{{image[19:]}}" data-toggle="lightbox" data-gallery="example-gallery" style="padding-right: 4px; margin-top: 10pt">
-                  <img src="/repos/{{image[19:]}}" class="img-thumbnail rounded" style="padding: 0pt; width: calc(33% - 5px);">
+          {% for i in module_data.get('images', []) %}
+              <a href="{{module_data['github_raw']}}{{i}}" data-toggle="lightbox" data-gallery="example-gallery" style="padding-right: 4px; margin-top: 10pt">
+                  <img src="{{module_data['github_raw']}}{{i}}" class="img-thumbnail rounded" style="padding: 0pt; width: calc(33% - 5px);">
               </a>
           {% end %}
         </div>
@@ -104,25 +153,19 @@ $(document).ready(function() {
   <div class="col-sm-12">
       <div class="card">  <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" data-toggle="tab" href="#en" role="tab">English description</a>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" data-toggle="tab" data-bs-toggle="tab" data-bs-target="#description" role="tab">Description</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" href="#cs" role="tab">Czech description</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" href="#download" role="tab" distabled>Download</a>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-bs-target="#download" role="tab" distabled>Download</a>
         </li>
       </ul>
     </div>
-      <div class="card-block tab-content">
-        <div class="tab-pane" id="cs" role="tabpanel" style="padding: 10pt;">
-        {% raw module_data.get('doc_cs') %}
+      <div class="card-block tab-content markdown">
+        <div class="tab-pane fade show active" id="description" role="tabpanel" style="padding: 32px;">
+          {%raw readme_html %}
         </div>
-        <div class="tab-pane active" id="en" role="tabpanel" style="padding: 10pt;">
-        {% raw module_data.get('doc_en') %}
-        </div>
-        <div class="tab-pane" id="download" role="tabpanel" style="padding: 10pt;">
+        <div class="tab-pane fade" id="download" role="tabpanel" style="padding: 32px;">
             {% for documet in documents %}
               <li><a href="{{ assembly_gh_link(module_data) }}/{{documet[19:]}}">{{documet[19:]}}</a></li>
             {% end %}

@@ -28,6 +28,9 @@ import re
 from six.moves.html_parser import HTMLParser
 from w3lib.html import replace_entities
 from . import _sql, BaseHandler, sendMail
+
+import markdown
+
 #import subprocess
 
 def assembly_gh_link(document):
@@ -53,8 +56,26 @@ class permalink(BaseHandler):
 class home(BaseHandler):
     #@asynchronous
     def get(self, data=None):
-        module_data = self.db_web.Modules.find({ "$and": [ {"$or":[{'status': 2}, {'status':'2'}]}, {'mark': {"$gte": 45}}, {"$where": "this.longname_cs.length > 20"}, {"$where": "this.image.length > 4"}, {'image':{"$not":re.compile("QRcode")}}]})
+        module_data = self.db_web.Modules.find({ "$and": [ {"$or":[{'status': 2}, {'status':'2'}]}, {'mark': {"$gte": 45}}, {"$where": "this.image.length > 4"}, {'image':{"$not":re.compile("QRcode")}}]})
         self.render("index.hbs", parent=self, modules = module_data)
+
+class ibom(BaseHandler):
+    #@asynchronous
+    def get(self, module = None):
+        print(module)
+        module_data = self.db_web.Modules.find({"_id": module})[0]
+
+        self.render(module_data['local_root']+'/'+module_data['mod_ibom'])
+
+        
+class readme(BaseHandler):
+    #@asynchronous
+    def get(self, module = None):
+        print(module)
+        #if ''
+        module_data = self.db_web.Modules.find({"_id": module})[0]
+
+
 
 class module_detail(BaseHandler):
     #@asynchronous
@@ -66,7 +87,20 @@ class module_detail(BaseHandler):
 
         images = glob.glob(module_path+"/doc/img/*.jpg")
         images.extend(glob.glob(module_path+"/doc/img/*.png"))
-        self.render("modules.detail.hbs", db_web = self.db_web, module=module, module_data=module_data, images = images, documents = glob2.glob(module_path+"//**/*.pdf"), assembly_gh_link = assembly_gh_link)
+        images.extend(glob.glob(module_path+"/doc/img/*.svg"))
+
+        if not module_data.get('file_readme'):
+            readme_html = "No content"
+        else:
+            readme_html = markdown.markdown(open(module_data.get('file_readme', ''), 'r').read(),
+                extensions=['pymdownx.extra', 'pymdownx.magiclink', 'pymdownx.b64'],
+                extension_configs={
+                    "pymdownx.b64": {"base_path": os.path.dirname(module_data.get('file_readme', ''))},
+                }
+            )
+
+        self.render("modules.detail.hbs", db_web = self.db_web, module=module, module_data=module_data, images = images, documents = glob2.glob(module_path+"//**/*.pdf"),
+            assembly_gh_link = assembly_gh_link, readme_html = readme_html, path = module_path)
 
 class module_comapare(BaseHandler):
     #@asynchronous
@@ -108,6 +142,8 @@ class modules(BaseHandler):
 
         #print "status", status
         #print "category", category
+        search = self.get_argument('search', '');
+        print("search:", search)
 
 
         if category:
@@ -127,13 +163,27 @@ class modules(BaseHandler):
             #},
             {
                 "$match": {'status': {"$in": status}}
+            },
+            {
+                "$match": {"$or": [
+                    {
+                        "name": { "$regex": search, "$options": 'i'}
+                    },
+                    {
+                        'short_cs': { "$regex": search, "$options": 'i'}
+                    },
+                    {
+                        'short_en': { "$regex": search, "$options": 'i'}
+                    }
+                ]
+            }
             }
             #"$match": {'tags.'+tag_search : {"$exists" : tag_polarity}}
 
             #     {"category[]": {"$in": [category]}},
             #     {"status": {"$exists":True, "$in": status }}
         ])
-        self.render("modules.hbs", parent=self, category = category, modules = modules, status = status, db_web = self.db_web)
+        self.render("modules.hbs", parent=self, category = category, modules = modules, status = status, db_web = self.db_web, search_query=search)
 
 
     def post(self, category = None):

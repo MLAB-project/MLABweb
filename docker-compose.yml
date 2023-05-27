@@ -7,6 +7,11 @@ services:
     networks:
       internal:
         ipv4_address: 172.10.0.10
+    volumes:
+      - "/home/roman/repos/mlab/MLABweb/src/MLABweb:/MLABweb"
+      - "/home/roman/repos/mlab-modules:/data/mlab/modules-org"
+      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+
 
   updater:
     container_name: MLABweb-updater
@@ -16,6 +21,8 @@ services:
       - "git_to_mongo.py"
     volumes:
       - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+      - "/home/roman/repos/mlab-modules:/data/mlab/modules-org"
+      - "/home/roman/repos/mlab/MLABweb/src/MLABweb:/MLABweb"
     networks:
       internal:
         ipv4_address: 172.10.0.11
@@ -28,8 +35,10 @@ services:
     networks:
       internal:
         ipv4_address: 172.10.0.14
-    volumes:
-      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+    #volumes:
+    #  - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+    #  - "/home/roman/repos/mlab-modules:/data/mlab/modules-org"
+
 
 networks:
   internal:

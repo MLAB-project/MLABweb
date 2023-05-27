@@ -230,13 +230,13 @@
         {%for module in modules%}
           <div style="padding: 10pt;" class="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-12"><div class="card module-card">
 
-            <a href="/module/{{module['name']}}/">
+            <a href="/module/{{module.get('name')}}/">
               {% if module.get('image_small', False) %}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module['root']}}/{{module['image_small']}}" alt="{{module['name']}}">
-              {% elif module['image']%}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module['root']}}/{{module['image']}}" alt="{{module['name']}}">
+                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/{{module.get('image_small')}}" alt="{{module.get('name')}}">
+              {% elif module.get('image')%}
+                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/{{module.get('image')}}" alt="{{module.get('name')}}">
               {% else %}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module['root']}}/DOC/SRC/img/{{module['name']}}_Top_Big.jpg" alt="{{module['name']}}">
+                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/DOC/SRC/img/{{module.get('name')}}_Top_Big.jpg" alt="{{module.get('name')}}">
               {% end %}
             </a>
 
@@ -245,10 +245,10 @@
             <div style="margin-bottom: 8pt;">{% for tag in module.get('category[]', []) %}
               <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
             {%end%}</div>
-            <h3><a href="/module/{{module['name']}}/">
-            {{module['name']}}</a> {%if current_user and current_user['is_staff'] %}<small class="text-muted"> - <a href="/module/{{module['name']}}/edit">ed</a></small>{%end%}</h3>
+            <h3><a href="/module/{{module.get('name')}}/">
+            {{module.get('name')}}</a></h3>
             
-            <small>{{module[_("short_en")]}}</small>
+            <small>{{module.get("description")}}</small>
             </div>
           </div></div>
         {%end%}
@@ -323,8 +323,6 @@
 Gitter</a><br>
             <a href="https://www.facebook.com/MLAB-203283666377414"><i class="fa fa-facebook-official" aria-hidden="true"></i>
  Facebook</a><br>
-            <a href="https://plus.google.com/110124234725033215669"><i class="fa fa-google-plus-official" aria-hidden="true"></i>
-Google +</a><br>
             <a href="https://www.youtube.com/channel/UCCt-R6wkMmc3Aoi0c3IqpjA"><i class="fa fa-youtube-play" aria-hidden="true"></i>
 YouTube</a><br>
             <br>

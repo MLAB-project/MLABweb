@@ -67,7 +67,7 @@ a.selected{
   	</div>
 
 	<div class="input-group mb-3">
-		<input id="module_search" type="text" class="form-control" placeholder="Vyhledavani ..." aria-label="Search ...." aria-describedby="basic-addon2" onchange="reload()">
+		<input id="module_search" type="text" class="form-control" placeholder="Vyhledavani ..." aria-label="Search ...." aria-describedby="basic-addon2" onchange="reload()" value="{{search_query}}">
 		<div class="input-group-append">
 			<button class="btn btn-outline-success" type="button" onclick="reload()">Search</button>
 		</div>
@@ -103,29 +103,35 @@ a.selected{
 
 
 <div class="row">
-<div class="card-deck" id="modules_box">
+<div class=" cantainer px-4 card-deck row" id="modules_box">
 
 
   
 {% for module in modules %}
 
+
+
 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3" >
     <div class="card" style="max-height: 450pt; overflow-y: hidden;">
     	<a href="/module/{{module['_id']}}/">
-    	{% if not module.get('image', None)%}
-    	<img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module['root']}}/DOC/SRC/img/{{module['_id']}}_Top_Big.jpg" alt="{{module['_id']}}">
-    	{% else %}
-    	<img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module['root']}}/{{module['image']}}" alt="{{module['_id']}}">
-    	{% end %}
+
+		{% if module.get('image_title') %}
+			<img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
+		{% elif module.get('image') %}
+			<img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module['_id']}}">
+		{% else %}
+		<img class="card-img-top" src="/static/noimage.png" alt="Module">
+		{% end %}
+
     	</a>
   
 		<div class="status status-{{module['status']}}"></div>
     	<div class="card-block" style="padding: 10pt;">
 
             <div style="margin-bottom: 8pt;">{% for tag in module.get('category[]', []) %}
-              <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
+              <a href="/modules/{{tag}}/"><span class="badge rounded-pill bg-success">{{tag}}</span></a>
             {%end%}{% for tag in module.get('tags', []) %}
-              <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
+              <a href="/modules/{{tag}}/"><span class="badge rounded-pill bg-success">{{tag}}</span></a>
             {%end%}</div>
 
 	      	<h4 class="card-title"><a href="/module/{{module['_id']}}/">{{module['_id']}}</a></h4>
@@ -175,6 +181,11 @@ function reload(){
 	//var card = $('#card-template').html();
 
     $("#modules_box").empty();
+
+	const urlParams = new URLSearchParams(window.location.search);
+	urlParams.set('search', $("#module_search").val());
+	window.location.search = urlParams;
+
 	$.ajax({
         type: "POST",
         data: {

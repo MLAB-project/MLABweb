@@ -1,5 +1,7 @@
 tornado
 pymongo
+#torndown
+pymdown-extensions
 requests-oauthlib
 requests
 glob2
