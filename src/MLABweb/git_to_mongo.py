@@ -9,12 +9,122 @@ import json, yaml
 import pymongo
 import time
 
-
 db = pymongo.MongoClient("mongo", 27017)
 dbcol = db['MLABweb']['Modules']
+dbcat = db['MLABweb']['Category']
+
+
+categories = [
+    {
+        'name': 'Power switches',
+        'code': 'power_sw',
+        'tags': []
+    },{
+        'name': 'Sensors',
+        'code': 'sensor',
+        'tags': []
+    },{
+        'name': 'Clock',
+        'code': 'clock',
+        'tags': []
+    },{
+        'name': 'Radio communication',
+        'code': 'comm_rf',
+        'tags': []
+    },{
+        'name': 'IR communication',
+        'code': 'comm_ir',
+        'tags': []
+    },{
+        'name': 'Serial communication',
+        'code': 'comm_serial',
+        'tags': []
+    },{
+        'name': 'Translators',
+        'code': 'translators',
+        'tags': []
+    },{
+        'name': 'Memories',
+        'code': 'memory',
+        'tags': []
+    },{
+        'name': 'ARM',
+        'code': 'ARM',
+        'tags': []
+    },{
+        'name': 'AVR',
+        'code': 'avr',
+        'tags': []
+    },{
+        'name': 'PIC',
+        'code': 'pic',
+        'tags': []
+    },{
+        'name': 'Power supply',
+        'code': 'power_supply',
+        'tags': []
+    },{
+        'name': 'Universial parts',
+        'code': 'universal',
+        'tags': []
+    },{
+        'name': 'Human interfaces',
+        'code': 'human_interfaces',
+        'tags': []
+    },{
+        'name': 'Audio',
+        'code': 'audio',
+        'tags': []
+    },{
+        'name': 'Motor drivers',
+        'code': 'h_bridge',
+        'tags': []
+    },{
+        'name': 'x86 CPU',
+        'code': 'x86',
+        'tags': []
+    },{
+        'name': 'Boxes',
+        'code': 'boxes',
+        'tags': []
+    },{
+        'name': 'Operational amplifiers',
+        'code': 'op_amps',
+        'tags': []
+    },{
+        'name': 'Time-to-digital converters',
+        'code': 'tdc',
+        'tags': []
+    },{
+        'name': 'Measuring',
+        'code': 'measuring',
+        'tags': []
+    },{
+        'name': 'CPLD FPGA',
+        'code': 'cpld_fpga',
+        'tags': []
+    },{
+        'name': 'AD converters',
+        'code': 'ad_converters',
+        'tags': []
+    },{
+        'name': 'Mechanical parts',
+        'code': 'mechanical',
+        'tags': []
+    }
+]
+
+
+dbcat.delete_many({})
+dbcol.delete_many({})
+
+for c in categories:
+    c['_id'] = c['code']
+    dbcat.update_one({'_id': c['_id']}, { "$set": c }, upsert=True)
+
 
 while 1:
-    #dbcol.remove({})
+    #dbcol.delete_many({})
 
     #for root, dirs, files in os.walk('/data/mlab/modules-org'):
     for root, dirs, files in os.walk('/data/mlab/Modules'):
@@ -54,8 +164,10 @@ while 1:
                         data['github_url'] = 'https://github.com/MLAB-project/Modules/master/{}'.format(data['root'])
                         data['github_raw'] = 'https://raw.githubusercontent.com/MLAB-project/Modules/master/{}'.format(data['root'])
 
+                        data['revisions'] = [data['name']]
+
                         out = dbcol.find_one({'_id':data['name']})
-                        if not out.get('source') == 'yaml':
+                        if not out or not out.get('source') == 'yaml':
                             dbcol.update_one({"_id":data['name']}, {"$set": data}, upsert=True)
                             print("json", root)
                         else:
@@ -100,16 +212,25 @@ while 1:
                             data['image_title'] = data['image']
 
                         #print(data)
-                        for b in data.get('branches',[]):
+                        data['revisions'] = data.get('github_branches', [])
+                        for b in data.get('github_branches',[]):
                             print("DELETING ... b")
                             dbcol.delete_one({"_id":b})
                         dbcol.update_one({"_id":data['name']}, {"$set": data}, upsert=True)
                 except Exception as e:
-                    print("CHYBA:", e)
+                    print("CHYBA:", e, root)
                     repr(e)
 
         except Exception as e:
-            print("CHYBA:", e)
+            print("CHYBA:", e, root)
+        
+    for module in dbcol.find({'source': 'legacy'}):
+        possible = module['name'][:-1]
+        print(module['name'], possible)
+
+        module_revisions = list(dbcol.find({"revisions": module['name']}))
+        if len(module_revisions):
+            print("SHODA...", possible, module_revisions[0]['name'])
 
     print("DONE... ")
     time.sleep(60)

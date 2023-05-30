@@ -81,6 +81,12 @@ class module_detail(BaseHandler):
     #@asynchronous
     def get(self, module = None):
         print(module)
+
+        module_revisions = list(self.db_web.Modules.find({"revisions": module}))
+        if len(module_revisions):
+            nn = module[:-1]
+            if len(list(self.db_web.Modules.find({"name": nn}))):
+                self.redirect("/module/{}/".format(nn))
         
         module_data = self.db_web.Modules.find({"_id": module})[0]
         module_path = tornado.options.options.mlab_repos+module_data['root']
@@ -132,11 +138,18 @@ class modules(BaseHandler):
         statuss = []
 
         if 'status' in self.request.arguments:
-            status = [int(n.decode("utf-8")) for n in self.request.arguments['status']]
+            status = self.request.arguments['status']
+            s = []
+            for st in status:
+                for sta in st.decode('utf-8').split(','):
+                    s.append(int(sta))
+            #status = [int(n.decode("utf-8")) for n in ]
+            status = s
 
         else:
-            statuss = self.get_cookie('status', "2").split(",")
-            status = list(map(int, statuss))
+            status = self.get_cookie('status', "2").split(",")
+            status = [int(n) for n in status]
+
 
         status = status + statuss
 
@@ -151,38 +164,44 @@ class modules(BaseHandler):
         else:
             cat_pol = "$nin"
 
-        modules = self.db_web.Modules.aggregate([
-            {
-                "$unwind": "$_id"
-            },
-            {
-                "$match": {'category[]': {cat_pol: [category]}}
-            },
-            #{
-            #    "$match": {"$exists": "status"}
-            #},
-            {
-                "$match": {'status': {"$in": status}}
-            },
-            {
-                "$match": {"$or": [
-                    {
-                        "name": { "$regex": search, "$options": 'i'}
-                    },
-                    {
-                        'short_cs': { "$regex": search, "$options": 'i'}
-                    },
-                    {
-                        'short_en': { "$regex": search, "$options": 'i'}
-                    }
-                ]
-            }
-            }
-            #"$match": {'tags.'+tag_search : {"$exists" : tag_polarity}}
+        if not len(search):
 
-            #     {"category[]": {"$in": [category]}},
-            #     {"status": {"$exists":True, "$in": status }}
-        ])
+            modules = self.db_web.Modules.aggregate([
+                {
+                    "$unwind": "$_id"
+                },
+                {
+                    "$match": {'category[]': {cat_pol: [category]}}
+                },
+                {
+                    "$match": {'status': {"$in": status}}
+                },
+                {
+                    "$match": {"$or": [
+                        {
+                            "name": { "$regex": search, "$options": 'i'}
+                        },
+                        {
+                            'description': { "$regex": search, "$options": 'i'}
+                        }
+                    ]}
+                }
+            ])
+        else:
+            modules = self.db_web.Modules.aggregate([
+               
+                {
+                    "$match": {"$or": [
+                        {
+                            "name": { "$regex": search, "$options": 'i'}
+                        },
+                        {
+                            'description': { "$regex": search, "$options": 'i'}
+                        }
+                    ]}
+                }
+            ])
+
         self.render("modules.hbs", parent=self, category = category, modules = modules, status = status, db_web = self.db_web, search_query=search)
 
 

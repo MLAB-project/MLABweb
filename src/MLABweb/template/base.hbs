@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-{% set navItems = ['oo', 'oo']%}
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -11,7 +10,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ escape(handler.settings["name"]) }}</title>
+    <title>{{ escape(handler.settings["name"]) }} | {% block title %} {% end %}</title>
     <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 
 

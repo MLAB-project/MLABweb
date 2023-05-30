@@ -1,6 +1,9 @@
 
+
 {% extends "base.hbs" %}
+{% block title %}{{module_data['name']}}{% end %}
 {% block content %}
+
 
 <style type="text/css">
   .card{
@@ -44,6 +47,11 @@
   .markdown tr:nth-child(even) {background-color: #f6f3f3;} 
   .markdown tr:hover {background-color: rgb(229, 229, 229);}
 
+  .markdown  blockquote {
+    margin: 0 0 1rem;
+    border-left: lightgray 5px solid;
+    padding-left: 5px;
+  }
 
 
 
@@ -94,9 +102,10 @@ $(document).ready(function() {
               <span class="badge badge-pill badge-success">{{tag}}</span>
             {%end%}</div>
         <h2 class="card-title">{{module_data['name']}}</h2>
-        <h4 class="card-subtitle mb-2 text-muted">{{module_data[_('longname_cs')]}}</h4>
+        <h4 class="card-subtitle mb-2 text-muted">{{module_data.get('description')}}</h4>
         <!-- <h4 class="card-subtitle mb-2 text-muted">{{module_data['longname_en']}}</h4> -->
         <!-- <p class="card-text">{{module_data}}</p> -->
+        <p class="text-muted">{{module_data.get('revisions')}}</p>
 
       </div>
       <div class="card-block" style="padding: 10pt;border-top: 1px solid rgba(0,0,0,.125);">

@@ -43,6 +43,7 @@ services:
 networks:
   internal:
     driver: bridge
+    external: false
     ipam:
       driver: default
       config:

@@ -2,7 +2,7 @@
 {% extends "base.hbs" %}
 {% block content %}
 
-
+{% block title %}Modules{% end %}
 
 <style type="text/css">
 	.card{
@@ -45,65 +45,51 @@ a.selected{
 {%end%}
 
 
-<h3> Category {% if category %} <span class="badge badge-pill badge-success">{{category}}</span> {%else%} <small>All</small> {%end%}</h3> 
-
-<div class="card" style="margin-left: -15px; margin-right: -15px;">
+<div class="card">
   <div class="card-block">
-	<ul class="columns" style="padding: 15pt;">
-		<li><a href="/module">All</a></li>
-	{% for cat in db_web.Category.find({})%}
-		<li> <a href="/modules/{{cat['_id']}}/" class="{%if category == cat['_id']%}selected{%end%}">{{cat[_('lang_short')]}}</a></li>
-	{% end %}
+	<div class="card-body"> 
+	<h4 style="">Categories</h4>
+	<ul class="columns" style="">
+		<li><a class="badge rounded-pill bg-secondary {%if not category%}selected  bg-dark{%end%}" href="/module">All</a></li>
+		{% for cat in db_web.Category.find({})%}
+			<li> <a href="/modules/{{cat['_id']}}/" class="badge rounded-pill  bg-secondary {%if category == cat['_id']%}selected  bg-dark{%end%}">{{cat['name']}}</a></li>
+		{% end %}
 	
 	</ul>
-  </div>
-</div>
+	</div>
+	<hr style="margin: 0;">
+	<div class="card-body"> 
+		<h4>Filter modules:</h4>
+		<div class="mb-3">
+				<div class="row mb-2">
+					<div>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="0" {% if status and 0 in status %} checked {%end%}><span class="status status-0" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Proposial </label></span>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="1" {% if status and 1 in status %} checked {%end%}><span class="status status-1" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  In development</label></span>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="2" {% if status and 2 in status %} checked {%end%}><span class="status status-2" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Production</label></span>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="3" {% if status and 3 in status %} checked {%end%}><span class="status status-3" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Replaced</label></span>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="4" {% if status and 4 in status %} checked {%end%}><span class="status status-4" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Outdated</label></span>
+					</div>
+				</div>
 
-<p style="margin-left: -15px; margin-right: -15px;">
-	<div class="form-inline form-row">
-
-  	<div class="inline-block mb-3" style="margin-right: 10pt;">
-  		<button class="form-control btn btn-secondary" data-toggle="collapse" href="#filter">Filter</button>
-  	</div>
-
-	<div class="input-group mb-3">
-		<input id="module_search" type="text" class="form-control" placeholder="Vyhledavani ..." aria-label="Search ...." aria-describedby="basic-addon2" onchange="reload()" value="{{search_query}}">
-		<div class="input-group-append">
-			<button class="btn btn-outline-success" type="button" onclick="reload()">Search</button>
-		</div>
+				<div class="row mb-2">
+					<div>
+						<input id="module_search" type="text" class="form-control" placeholder="Vyhledavani ..." aria-label="Search ...." aria-describedby="basic-addon2" onchange="reload()" value="{{search_query}}">
+						<div class="input-group-append">
+							<button class="btn btn-outline-success" type="button" onclick="reload()">Search</button>
+						</div>
+					</div>
+				</div>
+	</div>
 	</div>
 
-  </div>
-</p>
-<div class="collapse" id="filter" >
-  <div class="card card-block" style="margin-left: -15px; margin-right: -15px;">
-  	<form method="GET">
-	<div class="row">
-		<div class="col-sm-3">
-			<h5>Status</h5>
-				<div class="checkbox"><label><input type="checkbox" name="status" value="0" {% if status and '0' in status %} checked {%end%}><span class="status status-0" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Návrh </label></div>
-				<div class="checkbox"><label><input type="checkbox" name="status" value="1" {% if status and '1' in status %} checked {%end%}><span class="status status-1" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  V přípravě</label></div>
-				<div class="checkbox"><label><input type="checkbox" name="status" value="2" {% if status and '2' in status %} checked {%end%}><span class="status status-2" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Produkce</label></div>
-				<div class="checkbox"><label><input type="checkbox" name="status" value="3" {% if status and '3' in status %} checked {%end%}><span class="status status-3" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Nahrazen</label></div>
-				<div class="checkbox"><label><input type="checkbox" name="status" value="4" {% if status and '4' in status %} checked {%end%}><span class="status status-4" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Starý</label></div>
-
-		</div>
-		
-		<div class="col-sm-3">
-
-		</div>
-		<div class="col-sm-3">
-
-		</div>
-	</div>
-	<input type="submit" value="Submit">
-	</form>
   </div>
 </div>
 
 
-<div class="row">
-<div class=" cantainer px-4 card-deck row" id="modules_box">
+
+
+<div class="row m-0">
+<div class=" cantainer card-deck row" id="modules_box">
 
 
   
@@ -116,9 +102,9 @@ a.selected{
     	<a href="/module/{{module['_id']}}/">
 
 		{% if module.get('image_title') %}
-			<img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
+			<img class="card-img-top" style="max-height: 200pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
 		{% elif module.get('image') %}
-			<img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module['_id']}}">
+			<img class="card-img-top" style="max-height: 200pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module['_id']}}">
 		{% else %}
 		<img class="card-img-top" src="/static/noimage.png" alt="Module">
 		{% end %}
@@ -182,14 +168,28 @@ function reload(){
 
     $("#modules_box").empty();
 
+	var names = $('[name="status"]:checked').map(function () {
+		return this.value;
+	}).get();
+	console.log("....", names)
+	var query = $("#module_search").val()
+
 	const urlParams = new URLSearchParams(window.location.search);
-	urlParams.set('search', $("#module_search").val());
+	urlParams.set('search', query);
+	urlParams.set('status', names );
 	window.location.search = urlParams;
+
+	//if(query.length > 0){
+	//	$( "[name='status']" ).prop( "disabled", true );
+	//}else{
+	//	$( "[name='status']" ).prop( "disabled", true );
+	//}
 
 	$.ajax({
         type: "POST",
         data: {
-        	'search': $("#module_search").val()
+        	'search': query,
+        	'status': $(".status").val()
         },
         success: function (data) {
             var modules = JSON.parse(data);
