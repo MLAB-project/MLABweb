@@ -231,12 +231,10 @@
           <div style="padding: 10pt;" class="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-12"><div class="card module-card">
 
             <a href="/module/{{module.get('name')}}/">
-              {% if module.get('image_small', False) %}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/{{module.get('image_small')}}" alt="{{module.get('name')}}">
+              {% if module.get('image_title', False) %}
+                <img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module.get('name')}}">
               {% elif module.get('image')%}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/{{module.get('image')}}" alt="{{module.get('name')}}">
-              {% else %}
-                <img class="card-img-top" src="/static/loading.png" data-src="/repos/{{module.get('root')}}/DOC/SRC/img/{{module.get('name')}}_Top_Big.jpg" alt="{{module.get('name')}}">
+                <img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module.get('name')}}">
               {% end %}
             </a>
 
