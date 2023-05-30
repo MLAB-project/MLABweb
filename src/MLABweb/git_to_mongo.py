@@ -233,7 +233,7 @@ while 1:
             print("SHODA...", possible, module_revisions[0]['name'])
 
     print("DONE... ")
-    time.sleep(60)
+    time.sleep(300)
     # while 1:
     #     time.sleep(1)
     #     print("..")
