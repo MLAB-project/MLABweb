@@ -120,12 +120,12 @@ def sync_branches(repositories):
 
 # Hlavní funkce
 def main():
-    repositories = get_organization_repositories()[:10]
+    repositories = get_organization_repositories()
     print("Repositories:")
-    #print(len(repositories))
-    #for repo in repositories:
-    #    clone_repository(repo['clone_url'], repo['name'])
-    #sync_branches(repositories)
+    print(len(repositories))
+    for repo in repositories:
+        clone_repository(repo['clone_url'], repo['name'])
+    sync_branches(repositories)
     check_deleted_repositories(repositories)
     upload_to_mongodb(repositories)
 
