@@ -15,10 +15,12 @@ CATEGORIES_FILE = "categories.txt"
 
 # Získání seznamu repozitářů organizace
 def get_organization_repositories():
-    url = f'https://api.github.com/orgs/{ORGANIZATION}/repos'
-    print(url)
-    response = requests.get(url)
-    repositories = json.loads(response.text)
+    repositories = []
+    for page in range(10):
+        url = f'https://api.github.com/orgs/{ORGANIZATION}/repos?per_page=100&page={page}'
+        print(url)
+        response = requests.get(url)
+        repositories += json.loads(response.text)
     return repositories
 
 # Stažení repozitáře
@@ -42,6 +44,8 @@ def upload_to_mongodb(repositories):
     client = MongoClient(MONGODB_CONNECTION_STRING)
     db = client[MONGODB_DATABASE]
     collection = db[MONGODB_COLLECTION]
+
+    collection.delete_many({})
 
     for repo in repositories:
         try:
@@ -83,7 +87,8 @@ def upload_to_mongodb(repositories):
             if not data.get('image_title') and 'image' in data:
                 data['image_title'] = data['image']
 
-            collection.insert_one(data)
+            #collection.insert_one(data)
+            collection.update_one({"_id":data['name']}, {"$set": data}, upsert=True)
         except Exception as e:
             print(e)
 
@@ -115,12 +120,12 @@ def sync_branches(repositories):
 
 # Hlavní funkce
 def main():
-    repositories = get_organization_repositories()[:3]
+    repositories = get_organization_repositories()[:10]
     print("Repositories:")
-    print(len(repositories))
-    for repo in repositories:
-        clone_repository(repo['clone_url'], repo['name'])
-    sync_branches(repositories)
+    #print(len(repositories))
+    #for repo in repositories:
+    #    clone_repository(repo['clone_url'], repo['name'])
+    #sync_branches(repositories)
     check_deleted_repositories(repositories)
     upload_to_mongodb(repositories)
 

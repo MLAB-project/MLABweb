@@ -162,8 +162,9 @@ class modules(BaseHandler):
             status = self.request.arguments['status']
             s = []
             for st in status:
-                for sta in st.decode('utf-8').split(','):
-                    s.append(int(sta))
+                if(len(st)):
+                    for sta in st.decode('utf-8').split(','):
+                        s.append(int(sta))
             #status = [int(n.decode("utf-8")) for n in ]
             status = s
 
@@ -187,13 +188,16 @@ class modules(BaseHandler):
 
         if not len(search):
 
-            modules = self.db_web.Modules.aggregate([
+            q = [
                 {
                     "$unwind": "$_id"
-                },
-                {
-                    "$match": {'category[]': {cat_pol: [category]}}
-                },
+                }]
+            if category:
+                q += [
+                    {
+                        "$match": {'category[]': {cat_pol: [category]}}
+                    }]
+            q += [
                 {
                     "$match": {'status': {"$in": status}}
                 },
@@ -207,7 +211,8 @@ class modules(BaseHandler):
                         }
                     ]}
                 }
-            ])
+            ]
+            modules = self.db_web.Modules.aggregate(q)
         else:
             modules = self.db_web.Modules.aggregate([
                
@@ -240,9 +245,6 @@ class modules(BaseHandler):
                 "$match": {"$or": [
                     {
                         "name": { "$regex": search, "$options": 'i'}
-                    },
-                    {
-                        'short_cs': { "$regex": search, "$options": 'i'}
                     },
                     {
                         'short_en': { "$regex": search, "$options": 'i'}
