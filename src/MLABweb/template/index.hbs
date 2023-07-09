@@ -64,14 +64,12 @@
       <li class=""><a href="/#Cooperation">{{ _("Cooperation")}}</a></li>
       <li class=""><a href="/#home_contact">{{ _("Contact")}}</a></li>
       <li class="submenu"> <a>GitHub</a><div class="submenu_show"><ul>
-        <li> <a href="https://github.com/MLAB-project"> MLAB project repository </a></li>
-        <li> <a href="https://github.com/MLAB-modules"> MLAB modules repository </a></li>
-      </ul></div></li>      <li class=""><a href="http://wiki.mlab.cz/">Wiki</a></li>
+        <li> <a target="_blank" href="https://github.com/MLAB-project"> MLAB project repository </a></li>
+        <li> <a target="_blank" href="https://github.com/MLAB-modules"> MLAB modules repository </a></li>
+      </ul></div></li>      <li class=""><a target="_blank" href="http://wiki.mlab.cz/">Wiki</a></li>
     </ul></div>
   </div><hr style="margin: 0px; margin-top: 10pt;">
     
-  </div><hr style="margin: 0px; margin-top: 10pt;">
-  </div>
 
     
 <div id="image_list" class="carousel slide" data-ride="carousel" style="max-height: 105%;">    <!-- Zacatek Karuselu -->
@@ -230,7 +228,7 @@
         {%for module in modules%}
           <div style="padding: 10pt;" class="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-12"><div class="card module-card">
 
-            <a href="/module/{{module.get('name')}}/">
+            <a href="/module/{{module.get('name')}}/" target="_blank">
               {% if module.get('image_title') %}
                 <img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module.get('name')}}">
               {% end %}
@@ -239,9 +237,9 @@
             <div class="home-card-text">
 
             <div style="margin-bottom: 8pt;">{% for tag in module.get('tags', [])[:15] %}
-              <a href="/modules/{{tag}}/"><span class="badge bg-pill bg-success">{{tag}}</span></a>
+              <a href="/modules/{{tag}}/" target="_blank"><span class="badge bg-pill bg-success">{{tag}}</span></a>
             {%end%}</div>
-            <h3><a href="/module/{{module.get('name')}}/">
+            <h3><a href="/module/{{module.get('name')}}/" target="_blank">
             {{module.get('name')}}</a></h3>
             
             <small>{{module.get("description")}}</small>

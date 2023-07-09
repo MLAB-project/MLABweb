@@ -15,8 +15,6 @@
     padding: 0px;
   }
 
- 
-
   .markdown{
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     font-size: 16px;
@@ -116,7 +114,7 @@ $(document).ready(function() {
         <p class="text-muted mt-2 mb-0">
           {%for branch in module_data.get('github_branches', []) %} 
             {%if branch == module_data.get("github_branch", '') %}<b>{%end%}
-              <a href="{{module_data.get('github_url')}}/tree/{{branch}}/">{{branch}}</a>
+              <a href="{{module_data.get('github_url')}}/tree/{{branch}}/"  target="_blank">{{branch}}</a>
             {%if branch == module_data.get("github_branch", '') %}</b>{%end%}
           {%end%}
         </p>
@@ -125,16 +123,18 @@ $(document).ready(function() {
       </div>
       <div class="card-block" style="padding: 10pt;border-top: 1px solid rgba(0,0,0,.125);">
 
-        <a href="{{module_data.get('github_url')}}"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+        <a href="{{module_data.get('github_url')}}" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
 
-        {% if module_data.get('wiki', None) != None and str(module_data.get('wiki', '')) != 'None'%} <a href="{{module_data.get('wiki', '')}}"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
-        {% if module_data.get('ust', None) != None and str(module_data.get('ust', '')) != 'None'%} <a href="{{module_data.get('ust', '')}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('wiki', None) != None and str(module_data.get('wiki', '')) != 'None'%} <a href="{{module_data.get('wiki', '')}}" target="_blank"><i class="fa fa-book fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('ust', None) != None and str(module_data.get('ust', '')) != 'None'%} <a href="{{module_data.get('ust', '')}}" target="_blank"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
         
-        {% if module_data.get('mod_scheme', None) != None and str(module_data.get('mod_scheme', '')) != 'None'%} <a href="{{module_data['github_raw']}}{{module_data.get('mod_scheme', '')}}"><i class="fa fa-map-o fa-2x" aria-hidden="true"></i></a> {% end %}
-        {% if module_data.get('mod_ibom', None) != None and str(module_data.get('mod_ibom', '')) != 'None'%} <a href="./ibom"><i class="fa fa-list-alt fa-2x" aria-hidden="true"></i></a> {% end %}
-        {% if module_data.get('tindie_url', None) != None and str(module_data.get('tindie_url', '')) != 'None'%} <a href="{{module_data.get('tindie_url', '')}}"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('mod_scheme', None) != None and str(module_data.get('mod_scheme', '')) != 'None'%} <a href="{{module_data['github_raw']}}{{module_data.get('mod_scheme', '')}}" target="_blank"><i class="fa fa-map-o fa-2x" aria-hidden="true"></i></a> {% end %}
+        {% if module_data.get('mod_ibom', None) != None and str(module_data.get('mod_ibom', '')) != 'None'%} <a href="./ibom"><i class="fa fa-list-alt fa-2x" aria-hidden="true" target="_blank"></i></a> {% end %}
+        {% if module_data.get('tindie_url', None) != None and str(module_data.get('tindie_url', '')) != 'None'%} <a href="{{module_data.get('tindie_url', '')}}" target="_blank"><i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i></a> {% end %}
 
-
+      </div>
+      <div class="card-blok text-muted small" style="padding: 10pt;border-top: 1px solid rgba(0,0,0,.125);">
+          This is an <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://en.wikipedia.org/wiki/Open-source_hardware">open-source hardware</a> design, one of the modules from the <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://www.mlab.cz/">MLAB</a> labolatory system.
       </div>
     </div>
   </div>

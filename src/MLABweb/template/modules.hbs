@@ -97,12 +97,10 @@ a.selected{
 
 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3" >
     <div class="card" style="max-height: 500pt; overflow-y: hidden;">
-    	<a href="/module/{{module['_id']}}/">
+    	<a href="/module/{{module['_id']}}/"  target="_blank">
 
 		{% if module.get('image_title') %}
 			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
-		{% elif module.get('image') %}
-			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module['_id']}}">
 		{% else %}
 		<img class="card-img-top" style="max-height: 250pt; object-fit: cover;" src="/static/noimage.png" alt="Module">
 		{% end %}
@@ -118,7 +116,7 @@ a.selected{
               <a href="/modules/{{tag}}/"><span class="badge rounded-pill bg-success">{{tag}}</span></a>
             {%end%}</div>
 
-	      	<h4 class="card-title"><a href="/module/{{module['_id']}}/">{{module['_id']}}</a></h4>
+	      	<h4 class="card-title"><a href="/module/{{module['_id']}}/" target="_blank">{{module['_id']}}</a></h4>
 	      	<p class="card-text">
 				{{module.get('description')}}
 			</p>
@@ -135,21 +133,16 @@ a.selected{
 <script id="card-template" type="text/x-custom-template">
 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3" >
     <div class="card" style="max-height: 450pt; overflow-y: hidden;">
-    	<a class="card-image" href="/module/module_id/"></a>
+    	<a class="card-image" href="/module/module_id/" target="_blank"></a>
     	
     	<img class="card-img-top" src="/static/loading.png" data-src="" alt="PWMLED01C">
 
 		<div class="status"></div>
     	<div class="card-block" style="padding: 10pt;">
             <div style="margin-bottom: 8pt;"></div>
-	      	<h4 class="card-title"><a class="card_title_text" href="module/_id"></a></h4>
+	      	<h4 class="card-title"><a class="card_title_text" href="module/_id" target="_blank"></a></h4>
 	      	<p class="card-text"></p>
 		</div>
-		{%if current_user and current_user['is_staff'] %}
-	   		 <div class="card-footer">
-	      		<small class="text-muted"><a class="card-edit-link">edit</a></small>
-	    	</div>
-	    {%end%} 
 	</div>
 </div>
 </script>
