@@ -33,6 +33,73 @@ import markdown
 
 #import subprocess
 
+class robots(BaseHandler):
+    def get(self):
+        data = ""
+        data += "Sitemap: https://www.mlab.cz/sitemap.xml \n\r"
+
+        self.write(data)
+
+class sitemap(BaseHandler):
+    def get(self):
+        print("Generovani sitemap")
+        self.set_header('Content-Type', 'text/xml')
+        import xml.etree.cElementTree as ET
+
+        #a = ET.Element("root")
+
+        #x = ET.SubElement(a, "xml")
+        #x.set("version", '1.0')
+        #x.set("encoding", "UST-8")
+
+        root = ET.Element("urlset")
+        root.set('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9")
+
+        sites = [
+            {
+                'url': "https://www.mlab.cz/",
+                'priority': 0.95
+            },
+            {
+                'url': "https://www.mlab.cz/#onas",
+                'priority': 0.7
+            },
+            {
+                'url': "https://www.mlab.cz/#home_contact",
+                'priority': 0.7
+            }
+        ]
+
+        for module in sites:
+            m_xml = ET.SubElement(root, "url")
+            loc = ET.SubElement(m_xml, "loc")
+            loc.text = module['url']
+
+            last_mod = ET.SubElement(m_xml, "last_mod")
+            last_mod.text = str(module.get('updated', "2023-06-01"))
+            
+            priority = ET.SubElement(m_xml, "priority")
+            priority.text = str(module.get('mark', 50)/100.0)
+        
+
+        module_data = self.db_web.Modules.find({})
+        for module in module_data:
+            print(".....................")
+            print(module)
+            m_xml = ET.SubElement(root, "url")
+            loc = ET.SubElement(m_xml, "loc")
+            loc.text = 'https://www.mlab.cz/module/{}'.format(module['name'])
+
+            last_mod = ET.SubElement(m_xml, "last_mod")
+            last_mod.text = str(module.get('updated', "2023-06-01"))
+            
+            priority = ET.SubElement(m_xml, "priority")
+            priority.text = str(module.get('mark', 50)/100.0)
+        
+        self.write(ET.tostring(root, encoding='utf8'))
+            
+
+
 def assembly_gh_link(document):
     if document.get('source', None) == 'yaml':
         url = document.get('github_url', '')
