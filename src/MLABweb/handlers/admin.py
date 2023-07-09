@@ -45,6 +45,7 @@ class sitemap(BaseHandler):
         print("Generovani sitemap")
         self.set_header('Content-Type', 'text/xml')
         import xml.etree.cElementTree as ET
+        from xml.dom import minidom
 
         #a = ET.Element("root")
 
@@ -53,7 +54,7 @@ class sitemap(BaseHandler):
         #x.set("encoding", "UST-8")
 
         root = ET.Element("urlset")
-        root.set('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9")
+        root.attrib['xmlns'] = "http://www.sitemaps.org/schemas/sitemap/0.9"
 
         sites = [
             {
@@ -96,7 +97,9 @@ class sitemap(BaseHandler):
             priority = ET.SubElement(m_xml, "priority")
             priority.text = str(module.get('mark', 50)/100.0)
         
-        self.write(ET.tostring(root, encoding='utf8'))
+        xml_string = ET.tostring(root,encoding='utf8', xml_declaration=True)
+        pretty_xml = minidom.parseString(xml_string).toprettyxml(indent="  ")
+        self.write(pretty_xml)
             
 
 
