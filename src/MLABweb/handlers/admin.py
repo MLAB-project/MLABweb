@@ -76,7 +76,7 @@ class sitemap(BaseHandler):
             loc = ET.SubElement(m_xml, "loc")
             loc.text = module['url']
 
-            last_mod = ET.SubElement(m_xml, "last_mod")
+            last_mod = ET.SubElement(m_xml, "lastmod")
             last_mod.text = str(module.get('updated', "2023-06-01"))
             
             priority = ET.SubElement(m_xml, "priority")
