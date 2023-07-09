@@ -109,7 +109,7 @@ class module_detail(BaseHandler):
     def get(self, module = None):
         print(module)
 
-        module_revisions = list(self.db_web.Modules.find({"revisions": module}))
+        module_revisions = list(self.db_web.Modules.find({"github_branches": module}))
         if len(module_revisions):
             nn = module[:-1]
             if len(list(self.db_web.Modules.find({"name": nn}))):
