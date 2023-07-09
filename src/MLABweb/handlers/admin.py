@@ -57,21 +57,27 @@ class home(BaseHandler):
     #@asynchronous
     def get(self, data=None):
         module_data = self.db_web.Modules.find(
-            { "$or": [
+            { "$or": [{
+                        "$and": [ 
+                            {'homepage': {"$eq": True}},
+                            {"$where": "this.image_title.length > 4"},
+                            {'image_title':{"$not":re.compile("QRcode")}}
+                        ]
+                    },
                     {
                         "$and": [ 
                             {"$or":[{'status': 2}, {'status':'2'}]},
                             {'mark': {"$gte": 55}},
-                            {"$where": "this.image.length > 4"},
-                            {'image':{"$not":re.compile("QRcode")}}
+                            {"$where": "this.image_title.length > 4"},
+                            {'image_title':{"$not":re.compile("QRcode")}}
                         ]
                     },
                     {
                         "$and": [ 
                             {"$or":[{'status': 2}, {'status':'2'}]},
                             {'homepage': {"$eq": 1}},
-                            {"$where": "this.image.length > 4"},
-                            {'image':{"$not":re.compile("QRcode")}}
+                            {"$where": "this.image_title.length > 4"},
+                            {'image_title':{"$not":re.compile("QRcode")}}
                         ]
                     }
                 ],

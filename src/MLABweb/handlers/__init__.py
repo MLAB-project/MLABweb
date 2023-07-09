@@ -30,34 +30,11 @@ class BaseHandler(tornado.web.RequestHandler):
         print("Prepare >> ", self.db_web)
 
     def get_current_user(self):
-        login = self.get_secure_cookie("login")
-        token = self.get_secure_cookie("token")
-
-        try:
-        	self.db_web
-        except Exception as e:
-        	print("Bezpecnostni procedura.... ")
-        	self.db_web = pymongo.MongoClient('mongo', 27017).MLABweb
-        
-        if not login:
-            print("neni prihlasen")
-            return None
-        else:
-            print("_id", login)
-            user = self.db_web.Users.find_one({"_id": login})
-    
-            print("Logen in", user['civil_name'])
-            return user
+        login = None
+        return None
 
     def get_user_locale(self):
-        if not self.get_cookie("locale"):
-            #print "Locale neni nastaveno - nastavuji en_UK"
-            tornado.locale.set_default_locale("en_UK")
-            return self.get_browser_locale()
-
-        locale =  self.get_cookie("locale")
-        #print "locale:", locale
-        tornado.locale.set_default_locale(locale)
+        tornado.locale.set_default_locale("en_UK")
         return self.get_browser_locale()
     
 

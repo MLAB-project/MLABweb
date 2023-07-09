@@ -52,26 +52,26 @@
 </head>
 <body style="padding-bottom: 0pt;">
 
+
+
   <div class="header" style="position: fixed; padding-bottom: 10pt;">
   <div class="container">
     <a href="/"><img src="/static/logo.png" height="35" alt="MLAB"></a>
     <ul class="nav nav-pills pull-right">
       <li class="active"><a href="/#">{{ _("Home")}}</a></li>
-      <li class=""><a href="#onas">{{ _("About")}}</a></li>
+      <li class=""><a href="/#onas">{{ _("About")}}</a></li>
       <li class=""><a href="/modules?status=2">{{ _("Modules")}}</a>
-      <li class=""><a href="#Cooperation">{{ _("Cooperation")}}</a></li>
-      <li class=""><a href="#home_contact">{{ _("Contact")}}</a></li>
-      <li class=""><a href="https://github.com/MLAB-project">GitHub</a></li>
-      <li class=""><a href="http://wiki.mlab.cz/">Wiki</a></li>
-      <li class="submenu"> <a>{{_("Language")}}</a><div class="submenu_show"><ul>
-        <li> <a onclick="setLang('cs_CZ')"><img src="/static/media/flags/CZ.png" alt="Czech"> Cs </a></li>
-        <li> <a onclick="setLang('en_UK')"><img src="/static/media/flags/GB.png" alt="English"> En </a></li>
-      </ul></div></li>
-      <li>{%if current_user %} <a href="/logout/">{{ _("Log out")}} <small> {{current_user['civil_name']}}</small> {%else%} <a href="/login/"> {{ _("Log in") }} {%end%}</a></li>
+      <li class=""><a href="/#Cooperation">{{ _("Cooperation")}}</a></li>
+      <li class=""><a href="/#home_contact">{{ _("Contact")}}</a></li>
+      <li class="submenu"> <a>GitHub</a><div class="submenu_show"><ul>
+        <li> <a href="https://github.com/MLAB-project"> MLAB project repository </a></li>
+        <li> <a href="https://github.com/MLAB-modules"> MLAB modules repository </a></li>
+      </ul></div></li>      <li class=""><a href="http://wiki.mlab.cz/">Wiki</a></li>
     </ul></div>
   </div><hr style="margin: 0px; margin-top: 10pt;">
-  
-
+    
+  </div><hr style="margin: 0px; margin-top: 10pt;">
+  </div>
 
     
 <div id="image_list" class="carousel slide" data-ride="carousel" style="max-height: 105%;">    <!-- Zacatek Karuselu -->
@@ -231,17 +231,15 @@
           <div style="padding: 10pt;" class="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-12"><div class="card module-card">
 
             <a href="/module/{{module.get('name')}}/">
-              {% if module.get('image_title', False) %}
+              {% if module.get('image_title') %}
                 <img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module.get('name')}}">
-              {% elif module.get('image')%}
-                <img class="card-img-top" src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image']}}" alt="{{module.get('name')}}">
               {% end %}
             </a>
 
             <div class="home-card-text">
 
-            <div style="margin-bottom: 8pt;">{% for tag in module.get('category[]', []) %}
-              <a href="/modules/{{tag}}/"><span class="badge badge-pill badge-success">{{tag}}</span></a>
+            <div style="margin-bottom: 8pt;">{% for tag in module.get('tags', [])[:15] %}
+              <a href="/modules/{{tag}}/"><span class="badge bg-pill bg-success">{{tag}}</span></a>
             {%end%}</div>
             <h3><a href="/module/{{module.get('name')}}/">
             {{module.get('name')}}</a></h3>

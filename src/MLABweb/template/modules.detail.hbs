@@ -81,7 +81,18 @@ $(document).ready(function() {
 </nav>
 {% end %}
 
+
 <div class="container">
+
+{% if module_data.get('replaced', None) %}
+
+  <div class="alert alert-warning" role="alert">
+  <h4 class="alert-heading"><i class="bi bi-info-circle"></i> Module <b>{{module_data['name']}}</b> was replaced.</h4>
+  <p>Module {{module_data['name']}} was replaced by newer version. Look at <b><a href="/module/{{module_data['replaced']}}/">{{module_data['replaced']}}</a></b>.</p>
+</div>
+
+{%end%}
+
 <div class="row">
   <div class="col-sm-6">
     <div class="card">
@@ -97,13 +108,19 @@ $(document).ready(function() {
       <div class="card-block" style="padding: 10pt;">
 
             <div style="margin-bottom: 8pt;">{% for tag in module_data.get('tags', []) %}
-              <span class="badge badge-pill badge-success">{{tag}}</span>
+              <span class="badge bg-pill bg-success">{{tag}}</span>
             {%end%}</div>
         <h2 class="card-title">{{module_data['name']}}</h2>
         <h4 class="card-subtitle mb-2 text-muted">{{module_data.get('description')}}</h4>
-        <!-- <h4 class="card-subtitle mb-2 text-muted">{{module_data['longname_en']}}</h4> -->
-        <!-- <p class="card-text">{{module_data}}</p> -->
-        <p class="text-muted">{{', '.join(module_data.get('github_branches', []))}}</p>
+
+        <p class="text-muted mt-2 mb-0">
+          {%for branch in module_data.get('github_branches', []) %} 
+            {%if branch == module_data.get("github_branch", '') %}<b>{%end%}
+              <a href="{{module_data.get('github_url')}}/tree/{{branch}}/">{{branch}}</a>
+            {%if branch == module_data.get("github_branch", '') %}</b>{%end%}
+          {%end%}
+        </p>
+
 
       </div>
       <div class="card-block" style="padding: 10pt;border-top: 1px solid rgba(0,0,0,.125);">
@@ -160,9 +177,9 @@ $(document).ready(function() {
         <li class="nav-item" role="presentation">
           <a class="nav-link active" data-toggle="tab" data-bs-toggle="tab" data-bs-target="#description" role="tab">Description</a>
         </li>
-        <li class="nav-item" role="presentation">
+        {#-- <li class="nav-item" role="presentation">
           <a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-bs-target="#download" role="tab" distabled>Download</a>
-        </li>
+        </li> #}
       </ul>
     </div>
       <div class="card-block tab-content markdown">

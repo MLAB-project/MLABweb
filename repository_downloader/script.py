@@ -49,8 +49,12 @@ def upload_to_mongodb(repositories):
 
     for repo in repositories:
         try:
-            repo_path = os.path.join(LOCAL_REPO_PATH, repo['name'])
 
+            if repo['name'] in ['MODUL01', '.github']:
+                print("Tento modul nebudu ukladat do databaze")
+                continue
+
+            repo_path = os.path.join(LOCAL_REPO_PATH, repo['name'])
 
             print(repo_path)
             #print(repo)
@@ -63,15 +67,12 @@ def upload_to_mongodb(repositories):
             data['local_root'] = repo_path
             data['file_readme'] = os.path.abspath(os.path.join(repo_path, 'README.md'))
 
-
             if not data.get('mark', False):
-                data['mark'] = 50
-
-            #if not 'category[]' in data: data['category[]'] = []
-
-            #if not type(data['category[]']) == list:
-            #    data['category[]'] = [data['category[]']]
+                data['mark'] = 30
             
+            data['homepage'] = data.get('homepage', False)
+            data['description'] = data.get('description', '')
+
             data['status'] = 2
             data['root'] = ''
 
@@ -79,13 +80,14 @@ def upload_to_mongodb(repositories):
 
             data['short_en'] = data['description']
             data['longname_en'] = data['description']
-            
-            if not 'image' in data and 'images' in data:
-                if len(data['images']):
-                    data['image'] = data['images'][0]
 
-            if not data.get('image_title') and 'image' in data:
-                data['image_title'] = data['image']
+            if data.get('replaced'):
+                data['status'] = 3
+                data['homepage'] = False
+            
+            if not data.get('image_title'):
+                if len(data['images']):
+                    data['image_title'] = data['images'][0]
 
             #collection.insert_one(data)
             collection.update_one({"_id":data['name']}, {"$set": data}, upsert=True)
