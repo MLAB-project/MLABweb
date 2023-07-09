@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   web:
+    container_name: "MLABweb-web"
     build: .
     ports:
       - "8000:5000"
@@ -9,20 +10,15 @@ services:
         ipv4_address: 172.10.0.10
     volumes:
       - "/home/roman/repos/mlab/MLABweb/src/MLABweb:/MLABweb"
-      - "/home/roman/repos/mlab-modules:/data/mlab/modules-org"
-      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
+      - "/data/mlab/mlab-modules:/data/mlab/mlab-modules"
 
 
   updater:
     container_name: MLABweb-updater
-    build: .
-    entrypoint:
-      - "python3"
-      - "git_to_mongo.py"
+    build: repository_downloader/.
     volumes:
-      - "/home/roman/repos/mlab/Modules:/data/mlab/Modules"
-      - "/home/roman/repos/mlab-modules:/data/mlab/modules-org"
-      - "/home/roman/repos/mlab/MLABweb/src/MLABweb:/MLABweb"
+      - "/data/mlab/mlab-modules:/data/mlab/mlab-modules"
+      - "/home/roman/repos/mlab/MLABweb/repository_downloader:/app"
     networks:
       internal:
         ipv4_address: 172.10.0.11
