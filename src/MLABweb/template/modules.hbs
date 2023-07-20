@@ -39,10 +39,6 @@ a.selected{
 
 </style>
 
-{%if current_user and current_user['is_staff'] %}
-<a href="/modules/all">Modules overview</a>
-<a href="/module/new">New module</a>
-{%end%}
 
 
 <div class="card">
@@ -91,6 +87,11 @@ a.selected{
 <div class="row m-0">
 <div class=" cantainer card-deck row" id="modules_box">
 
+{% if not modules %}
+<h2>:-( No module with this filter was found... Try to search differently. Or it is also possible that this module has not yet propagated this module and you can be the first to do it.
+  </h2>
+{% end %}
+
 {% for module in modules %}
 
 
@@ -100,7 +101,7 @@ a.selected{
     	<a href="/module/{{module['_id']}}/"  target="_blank">
 
 		{% if module.get('image_title') %}
-			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
+			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module.get('image_title')}}" alt="{{module['_id']}}">
 		{% else %}
 		<img class="card-img-top" style="max-height: 250pt; object-fit: cover;" src="/static/noimage.png" alt="Module">
 		{% end %}

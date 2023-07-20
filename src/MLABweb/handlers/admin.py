@@ -195,12 +195,15 @@ class module_detail(BaseHandler):
         if not module_data.get('file_readme'):
             readme_html = "No content"
         else:
-            readme_html = markdown.markdown(open(module_data.get('file_readme', ''), 'r').read(),
-                extensions=['pymdownx.extra', 'pymdownx.magiclink', 'pymdownx.b64'],
-                extension_configs={
-                    "pymdownx.b64": {"base_path": os.path.dirname(module_data.get('file_readme', ''))},
-                }
-            )
+            try:
+                readme_html = markdown.markdown(open(module_data.get('file_readme', ''), 'r').read(),
+                    extensions=['pymdownx.extra', 'pymdownx.magiclink', 'pymdownx.b64'],
+                    extension_configs={
+                        "pymdownx.b64": {"base_path": os.path.dirname(module_data.get('file_readme', ''))},
+                    }
+                )
+            except Exception as e:
+                readme_html = "No README.."
 
         self.render("modules.detail.hbs", db_web = self.db_web, module=module, module_data=module_data, images = images, documents = glob2.glob(module_path+"//**/*.pdf"),
             assembly_gh_link = assembly_gh_link, readme_html = readme_html, path = module_path)
@@ -271,7 +274,7 @@ class modules(BaseHandler):
             if category:
                 q += [
                     {
-                        "$match": {'category[]': {cat_pol: [category]}}
+                        "$match": {'tags': {cat_pol: [category]}}
                     }]
             q += [
                 {
@@ -323,7 +326,7 @@ class modules(BaseHandler):
                         "name": { "$regex": search, "$options": 'i'}
                     },
                     {
-                        'short_en': { "$regex": search, "$options": 'i'}
+                        'description': { "$regex": search, "$options": 'i'}
                     }
                 ]
             }

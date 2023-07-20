@@ -12,6 +12,9 @@ import calendar
 
 from handlers import github, admin, auth, api
 from handlers import _sql, BaseHandler
+import pymongo
+
+from categories import categories
 
 tornado.options.define("port", default=5000, help="port", type=int)
 tornado.options.define("debug", default=False, help="debug mode")
@@ -117,6 +120,13 @@ class WebApp(tornado.web.Application):
             autoreload=True
         )
         tornado.locale.load_translations("locale/")
+
+        dbw = pymongo.MongoClient('mongo', 27017).MLABweb.Category
+        dbw.delete_many({})
+        dbw.insert_many(categories)
+
+
+
         tornado.web.Application.__init__(self, handlers, **settings)
 
 def main():
