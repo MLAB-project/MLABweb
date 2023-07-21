@@ -1,7 +1,7 @@
 
 {% extends "base.hbs" %}
 {% block content %}
-
+{% import os %}
 <style type="text/css">
 	
 	.container{
@@ -17,26 +17,31 @@
 		padding-right: 15px;
 	}
 
+	.image_list{
+		width: 300pt;
+		overflow: scroll;
+		display: inline-flex;
+	}
+
+	.limsize {
+		max-width: 300pt;
+	}
+
 </style>
 	
 	<table class="table table-striped table-hover table-sm">
 		<tr><th>#</th>
-		<th>Název</th>
-		<th>Složka</th>
-		<th>Kategorie</th>
-		<th>Autor</th>
-		<th>Obr</th>
-		<th>wiki</th>
-		<th>ust</th>
-		<th>Para</th>
-		<th>cs jmeno</th>
-		<th>cs perex</th>
-		<th>cs doc</th>
-		<th>en jmeno</th>
-		<th>en perex</th>
-		<th>en doc</th>
-		<th>type</th>
-		<th>mark</th></tr>
+		<th>Name</th>
+		<th>Branches</th>
+		<th>Tags</th>
+		<th>Contributors</th>
+		<th>Title image</th>
+		<th>Images</th>
+		<th>Resources</th>
+		<th>Description</th>
+		<th>Main Conten (size)</th>
+		<th>Status</th>
+		<th>Mark</th></tr>
 
 	{%for i, module in enumerate(modules)%}
 
@@ -48,47 +53,46 @@
 			{# {{module}}
 			<hr> #}
 			{% try %}
-				{# <div class="module">{{module['name']}}{{module}} <small>edit</small></div> #}
+				{# <div class="module">{{module['name']}}{{module}} </div> #}
 				<td class="status-{{module['status']}}">{{i}}</td>
-				<td><b><a href="/module/{{module['name']}}/">{{module['name']}}</a>  <small><a href="/module/{{module['name']}}/edit/">edit</a></small></b></td>
-				<td><small>{{module['root']}}</small></td>
-				<td>{% for el in module.get('category[]', []) %} {{el}} {%end%}</td>
-				<td>{% for el in module.get('author[]', []) %} {{el}} {%end%}</td>
-				<td  data-toggle="tooltip" data-placement="top" title="{{module['image']}}">{% if module['image'] and 'QRcode' in module['image']%}<i class="fa fa-qrcode" aria-hidden="true"></i>{% elif module['image'] and len(module['image']) > 10 %}<a href="/repos/{{module['root']}}/{{module['image']}}"><i class="fa fa-check" aria-hidden="true"></i></a> {% else %}<i class="fa fa-times" aria-hidden="true"></i>  {{module['image']}}{%end%}</td>
-				<td  data-toggle="tooltip" data-placement="top" title="{{module['wiki']}}">{% if module['wiki'] and len(module['wiki']) > 10 %}<a href="{{module['wiki']}}"><i class="fa fa-check" aria-hidden="true"></i></a> {% else %}<i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
+				
+				<td>
+					<b><a href="/module/{{module['name']}}/">{{module['name']}}</a></b> <br>
+					<a href="{{module.get('github_url')}}">GH</a> <a href="{{module.get('github_url')}}/edit/{{module.get('github_branch','master')}}/doc/metadata.yaml">Edit</a> </td>
+				
+				<td class="limsize"><small>{{', '.join(module.get('github_branches', []))}}</small></td>
+				
+				<td class="limsize">{% for el in module.get('tags', []) %} <span class="badge bg-pill bg-success">{{el}}</span> {%end%}</td>
+				
+				<td>{% for el in module.get('contributors', []) %} {{el}} {%end%}</td>
 
-				<td  data-toggle="tooltip" data-placement="top" title="{{module['ust']}}"> {% if module['ust'] and len(module['ust']) > 10 %}<a href="{{module['ust']}}"><i class="fa fa-check" aria-hidden="true"></i></a> {% else %}<i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				<td>{{len(module.get('parameters', []))}}</td>
-				{% if module['longname_cs']%}<td>{{len(module['longname_cs'])}}{%else%}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				{% if module['short_cs']   %}<td>{{len(module['short_cs'])}}{% else %}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				{% if module['doc_cs']     %}<td>{{len(module['doc_cs'])}}{% else %}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				{% if module['longname_en']%}<td>{{len(module['longname_en'])}}{% else %}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				{% if module['short_en']   %}<td>{{len(module['short_en'])}}{% else %}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				{% if module['doc_en']     %}<td>{{len(module['doc_en'])}}{% else %}<td><i class="fa fa-times" aria-hidden="true"></i>{%end%}</td>
-				<td></td>
+				<td>
+					<img src="{{module['github_raw']}}/{{module.get('image_title')}}" style="height:80pt; max-width:100pt;"></img>
+				</td>
+
+				<td><div class="image_list">
+					{% for image in module.get('images') %}
+					<img src="{{module['github_raw']}}/{{image}}" style="height:80pt;" ></img>
+					{%end%}
+				</div></td>
+				
+				<td>
+					{% if len(module.get('wiki', " ")) > 10 %} <a href="{{module['wiki']}}"><i class="fa fa-wikipedia-w" aria-hidden="true"></i></a>{%end%}
+					{% if len(module.get('tindie_url', "")) > 10 %} <a href="{{module['tindie_url']}}"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>{%end%}
+
+					{% if module.get('mod_scheme', None) != None and str(module.get('mod_scheme', '')) != 'None'%} <a href="{{module['github_raw']}}{{module.get('mod_scheme', '')}}" target="_blank"><i class="fa fa-map-o" aria-hidden="true"></i></a> {% end %}
+					{% if module.get('mod_ibom', None) != None and str(module.get('mod_ibom', '')) != 'None'%} <a href="/module/{{module['name']}}/ibom"><i class="fa fa-list-alt" aria-hidden="true" target="_blank"></i></a> {% end %}
+				</td>
+
+				<td class="{%if not module.get('description')%}bg-danger{%elif len(module.get('description', " ")) < 100 %}bg-warning{%else%}bg-success{%end%}"><b> {%if module.get('description') %} {{len(module.get('description', " "))}}</b> -<span class="small"> {{module.get('description', '')}}  {%end%}</span></td>
+				<td class="{%if not os.path.exists(module.get('file_readme', ''))%}bg-danger{%elif (os.stat(module.get('file_readme', '')).st_size/1024)<1%}bg-warning{%else%}bg-success{%end%}"> {%if os.path.exists(module.get('file_readme', ''))%}{{ "{:.3f} Kb".format(os.stat(module.get('file_readme')).st_size/1024) }}{%else%} NOT exist {%end%} </td>
+
 				<td>{{module['mark']}}</td>
 			{% except Exception as e %}
 				Err {{e}}
 			{% end %}
 		</tr>
 	{% end %}
-
-			<tr><th>#</th>
-			<th>Název</th>
-			<th>Složka</th>
-			<th>Autor</th>
-			<th>Obrázek</th>
-			<th>wiki</th>
-			<th>ust</th>
-			<th>cs jmeno</th>
-			<th>cs perex</th>
-			<th>cs doc</th>
-			<th>en jmeno</th>
-			<th>en perex</th>
-			<th>en doc</th>
-			<th>type</th>
-			<th>mark</th></tr>
-
 
 	</table>
 

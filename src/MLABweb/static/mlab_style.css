@@ -73,22 +73,22 @@ width: 100%;
 }
 
 .status-0{
-background-color: #d7ccc8;
+background-color: #d7ccc8 !important;
 }
 .status-1{
-background-color: #ffeb3b;
+background-color: #ffeb3b !important;
 }
 
 .status-2{
-background-color: #8bc34a;
+background-color: #8bc34a !important;
 }
 
 .status-3{
-background-color: #ffc107;
+background-color: #ffc107 !important;
 }
 
 .status-4{
-background-color: #f44336;
+background-color: #f44336 !important;
 }
 
 .carousel-header{
