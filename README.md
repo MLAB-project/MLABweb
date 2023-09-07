@@ -1,6 +1,6 @@
 # MLABweb
 
-MLAB home page with catalogue of [MLAB modules](https://github.com/MLAB-modules).
+MLAB home page with the interactive catalog of [MLAB modules](https://github.com/MLAB-modules).
 
 
 ## Použití 
@@ -43,6 +43,16 @@ title: <G: Název modulu - generováno z názvu repozitáře>
 updated: <G: čas aktualizace>
 ```
 
+#### Stav a kvalita modulů
+Na webu je zelený proužek a filtr, kterým lze vybírat stav modulů:
+![obrazek](https://github.com/MLAB-project/MLABweb/assets/5196729/8b603185-a976-4acb-b256-cd5631cbcdd0)
+
+To je v yaml souboru parametr 'status', který může mít hodnotu 1-5, pokud není uvedena, tak se aplikuje 2.
+Hodnota 4 (replaced) se automaticky nastaví ve webserveru v případě, že součástka má nastavený atribut [replaced](https://github.com/mlab-modules/USB232R01/blob/USB232R01B/doc/metadata.yaml#L24)
+
+Pak existuje hodonota 'mark', což by taktéž mělo odrážet stav modulu ve smyslu jak moc má dobrou dokumentaci, jak moc je ten modul kompletní. Neexistuje ale nějaký popis toho, co odpovídá jakému číslu. Je to rozsah 0-100, tuším, že ty moduly s dobrou dokumentací mají hodnocení okolo 80-90 (já tam nechávám nějakou rezervu). Zde předpokládám, že tohle číslo bude způsobovat výchozí řazení na webu.
+
+Další parametr je ```homepage: true/false```, což způsobí, že se to zobrazí na úvodní stránce, Tam mám odhad, že by nemělo být více než cca 12 modulů. 
 
 ### Kategorie
 Na webu jsou zobrazeny předvybrané kategorie, které jsou provázány z github topics. Seznam kategorií, které jsou zobrazeny v horním menu je [zde](/src/MLABweb/categories.py). V souboru s metadaty to odpovídá položce `tags`. 
