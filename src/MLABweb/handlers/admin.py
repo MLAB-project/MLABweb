@@ -345,6 +345,15 @@ class modules_overview(BaseHandler):
         modules = self.db_web.Modules.find().sort([(order, 1)])
         self.render("modules.overview.hbs", parent=self, modules = modules)
 
+class modules_overview_JSON(BaseHandler):
+    def get(self):
+        order = self.get_argument('order', '_id')
+        modules = self.db_web.Modules.find().sort([(order, 1)])
+        modules_list = list(modules)
+        
+        self.set_header('Content-Type', 'application/json')
+        self.write(json.dumps(modules_list))
+
 class moduleImageUpload(BaseHandler):
     '''
         Tato funkce se stara o prijem uploadovanych obrazku a spravne zarazeni. 
