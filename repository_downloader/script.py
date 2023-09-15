@@ -72,8 +72,9 @@ def upload_to_mongodb(repositories):
             
             data['homepage'] = data.get('homepage', False)
             data['description'] = data.get('description', '')
-
-            data['status'] = 2
+            
+            if not data.get('status', False):
+                data['status'] = 0
             data['root'] = ''
 
             data['github_raw'] = data.get("github_url", "").replace("github.com","raw.githubusercontent.com")+"/{}/".format(data.get('github_branch'))
