@@ -352,7 +352,7 @@ class modules_overview_JSON(BaseHandler):
         modules_list = list(modules)
         
         self.set_header('Content-Type', 'application/json')
-        self.write(json.dumps(modules_list))
+        self.write(json.dumps(modules_list, indent=2)
 
 class moduleImageUpload(BaseHandler):
     '''
