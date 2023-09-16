@@ -4,6 +4,7 @@ import requests
 import json
 from pymongo import MongoClient
 import yaml
+import time
 
 # Získání proměnných z systémových proměnných
 ORGANIZATION = os.environ.get('ORGANIZATION', "mlab-modules")
@@ -21,6 +22,7 @@ def get_organization_repositories():
         print(url)
         response = requests.get(url)
         repositories += json.loads(response.text)
+        time.sleep(2)
     return repositories
 
 # Stažení repozitáře
