@@ -4,6 +4,7 @@ import requests
 import json
 from pymongo import MongoClient
 import yaml
+import time
 
 # Získání proměnných z systémových proměnných
 ORGANIZATION = os.environ.get('ORGANIZATION', "mlab-modules")
@@ -15,12 +16,30 @@ CATEGORIES_FILE = "categories.txt"
 
 # Získání seznamu repozitářů organizace
 def get_organization_repositories():
+
+    # Fetch repositories in paginated manner
+    # Determine the total number of repositories in the organization
+    response = requests.get(f"https://api.github.com/orgs/{github_org}")
+    if response.status_code != 200:
+        print(f"Failed to fetch organization info: {response.content}")
+        sys.exit(1)
+    total_repos = response.json().get("public_repos", 0)  # Change this to 'total_repos' if you are considering private repos as well
+
+    # Calculate the number of pages needed
+    pages_needed = -(-total_repos // 100)  # Equivalent to math.ceil(total_repos / 100)
+
+
+    # Fetch repositories in a paginated manner considering the total number of repositories
     repositories = []
-    for page in range(10):
+    for page in range(1, pages_needed + 1):
         url = f'https://api.github.com/orgs/{ORGANIZATION}/repos?per_page=100&page={page}'
         print(url)
         response = requests.get(url)
+        if response.status_code != 200:
+            print(f"Failed to fetch page {page}: {response.content}")
+            break
         repositories += json.loads(response.text)
+        time.sleep(2)
     return repositories
 
 # Stažení repozitáře
@@ -72,8 +91,9 @@ def upload_to_mongodb(repositories):
             
             data['homepage'] = data.get('homepage', False)
             data['description'] = data.get('description', '')
-
-            data['status'] = 2
+            
+            if not data.get('status', False):
+                data['status'] = 0
             data['root'] = ''
 
             data['github_raw'] = data.get("github_url", "").replace("github.com","raw.githubusercontent.com")+"/{}/".format(data.get('github_branch'))

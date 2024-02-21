@@ -39,10 +39,6 @@ a.selected{
 
 </style>
 
-{%if current_user and current_user['is_staff'] %}
-<a href="/modules/all">Modules overview</a>
-<a href="/module/new">New module</a>
-{%end%}
 
 
 <div class="card">
@@ -63,7 +59,7 @@ a.selected{
 		<div class="mb-3">
 				<div class="row mb-2">
 					<div>
-						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="0" {% if status and 0 in status %} checked {%end%}><span class="status status-0" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Proposial </label></span>
+						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="0" {% if status and 0 in status %} checked {%end%}><span class="status status-0" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Proposal </label></span>
 						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="1" {% if status and 1 in status %} checked {%end%}><span class="status status-1" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  In development</label></span>
 						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="2" {% if status and 2 in status %} checked {%end%}><span class="status status-2" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Production</label></span>
 						<span class="checkbox mr-5"><label><input type="checkbox" name="status"  onchange="reload()" value="3" {% if status and 3 in status %} checked {%end%}><span class="status status-3" style="width: 0.75em; display: inline-block;border: solid 1px; margin-left: 7px;"></span>  Replaced</label></span>
@@ -91,6 +87,11 @@ a.selected{
 <div class="row m-0">
 <div class=" cantainer card-deck row" id="modules_box">
 
+{% if not modules %}
+<h2>:-( No module with this filter was found... Try to search differently. Or it is also possible that this module has not yet propagated this module and you can be the first to do it.
+  </h2>
+{% end %}
+
 {% for module in modules %}
 
 
@@ -100,7 +101,7 @@ a.selected{
     	<a href="/module/{{module['_id']}}/"  target="_blank">
 
 		{% if module.get('image_title') %}
-			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module['image_title']}}" alt="{{module['_id']}}">
+			<img class="card-img-top" style="max-height: 250pt; object-fit: cover;"src="/static/loading.png" data-src="{{module['github_raw']}}/{{module.get('image_title')}}" alt="{{module['_id']}}">
 		{% else %}
 		<img class="card-img-top" style="max-height: 250pt; object-fit: cover;" src="/static/noimage.png" alt="Module">
 		{% end %}
