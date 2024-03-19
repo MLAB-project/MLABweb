@@ -19,7 +19,7 @@ def get_organization_repositories():
 
     # Fetch repositories in paginated manner
     # Determine the total number of repositories in the organization
-    response = requests.get(f"https://api.github.com/orgs/{github_org}")
+    response = requests.get(f"https://api.github.com/orgs/{ORGANIZATION}")
     if response.status_code != 200:
         print(f"Failed to fetch organization info: {response.content}")
         sys.exit(1)
