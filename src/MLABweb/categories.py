@@ -39,8 +39,8 @@ categories = [
         '_id': "power-supply",
         'name': "Power supply",
     },{
-        '_id': "universial",
-        'name': "Universial parts",
+        '_id': "universal",
+        'name': "Universal parts",
     },{
         '_id': "human-interface",
         'name': "Human interfaces",
