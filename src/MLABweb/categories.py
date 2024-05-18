@@ -24,7 +24,7 @@ categories = [
         '_id': "translators",
         'name': "Translators",
     },{
-        '_id': "memories",
+        '_id': "memory",
         'name': "Memories",
     },{
         '_id': "mcu-arm",
