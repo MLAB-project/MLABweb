@@ -1,7 +1,7 @@
 categories = [
 
     {
-        '_id': 'power-sw',
+        '_id': 'power-switch',
         'name': "Power switches",
         'description': "Power switches"
     },{
