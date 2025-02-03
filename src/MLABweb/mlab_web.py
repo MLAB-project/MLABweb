@@ -67,6 +67,9 @@ class WebApp(tornado.web.Application):
 
             (r'/api/modules/', api.modules),
             (r'/api/module/(.*)/', api.module),
+            
+            (r'/about', admin.about),
+            (r'/about/', admin.about),
 
             (r'/admin/', admin.home),
             (r'/modules', admin.modules),

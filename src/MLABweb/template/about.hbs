@@ -1,0 +1,131 @@
+
+{% extends "base.hbs" %}
+{% block content %}
+
+{% block title %}Modules{% end %}
+
+<style type="text/css">
+
+    .image-frame {
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 20px 5px;
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+    .image-frame img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+    .image-caption {
+      margin-top: 10px;
+      font-style: italic;
+      color: #555;
+    }
+
+</style>
+
+
+
+  <div class="container my-5">
+    <h1 class="mb-4">The Story of MLAB</h1>
+    <p>
+      The origins of MLAB date back to around 2004 when Milan Horkel (MiHo), a professional hardware developer, designed the first module, 
+      <a href="https://www.mlab.cz/module/RS232SINGLE01/" target="_blank">RS232SINGLE01</a>. His vision was to create an open, robust, and universal technical kit suitable for both hobbyists and professionals. The goal was to provide a reliable and flexible tool for testing and developing new, often revolutionary devices.
+    </p>
+    <!-- MIHOVA fotka -->
+
+    <div class="image-frame" style="width:30%; margin:auto;">
+        <img src="/static/media/about/MK.jpg" alt="Martin Kákona (Kakl)" style="width:100%">
+        <div class="image-caption">Martin Kákona (Kakl)</div>
+    </div>
+
+
+    <h2 class="mt-5">Early Development</h2>
+    <p>
+      Soon, Milan was joined by Martin Kákona (<a href="https://github.com/kakl" target="_blank">Kakl</a>), a source of fresh and sometimes crazy ideas, and Jakub Kákona (<a href="https://github.com/kaklik" target="_blank">kaklik</a>), a young student passionate about radio astronomy and robotics. Together, they started designing new modules, writing articles, and managing the project's website.
+    </p>
+    <!-- Fotky Kakl, kaklik -->
+
+    <div style="display:flex;justify-content: center;">
+    <div class="image-frame" style="width:30%;">
+        <img src="/static/media/about/MK.jpg" alt="Martin Kákona (Kakl)" style="width:100%">
+        <div class="image-caption">Martin Kákona (Kakl)</div>
+    </div>
+    <div class="image-frame" style="width:30%;">
+        <img src="/static/media/about/MK.jpg" alt="Martin Kákona (Kakl)" style="width:100%">
+        <div class="image-caption">Martin Kákona (Kakl)</div>
+    </div>
+    </div>
+
+    
+    <p>
+      Around this time, the company <a href="https://www.ust.cz/" target="_blank">Universal Scientific Technologies (UST)</a> was founded in connection with the development of MLAB. Initially, UST began manufacturing MLAB modules primarily for its own needs, but over time, it started providing them to other customers as well. This model continues to this day, supporting both internal projects and a wider user base.
+    </p>
+
+    <h2 class="mt-5">Growing Community</h2>
+    <p>
+      Since its inception, MLAB has continuously evolved and expanded. Thanks to its openness and versatility, it has gained the support of a wide-ranging community of enthusiasts and professionals. This includes researchers from institutions of the Czech Academy of Sciences, hobbyist groups like <a href="https://www.robozor.cz/" target="_blank">Robozor</a>, and observation networks such as the meteor detection system <a href="https://www.bolidozor.cz/" target="_blank">Bolidozor</a>.
+    </p>
+
+    <div style="display:flex;justify-content: center;">
+    
+    <div class="image-frame" style="width:48%;">
+        <img src="/static/media/about/robotour.jpg" alt="ROBOZOR robot" style="width:100%">
+        <div class="image-caption"></div>
+    </div>
+
+    <div class="image-frame" style="width:48%;">
+        <img src="/static/media/about/robot.jpg" alt="ROBOZOR robot" style="width:100%">
+        <div class="image-caption"></div>
+    </div>
+
+
+    </div>
+
+
+    <p>
+      A significant milestone in MLAB’s growth was the transition from a self-hosted Subversion documentation server to 
+      <a href="https://github.com/MLAB-project" target="_blank">GitHub</a>. For the electronic modules themselves, a separate GitHub organization, 
+      <a href="https://github.com/MLAB-modules" target="_blank">MLAB-modules</a>, was established. This change allowed for seamless collaboration, enabling more contributors to get involved easily. Additionally, it played a crucial role in increasing awareness of 
+      <a href="https://en.wikipedia.org/wiki/Open-source_hardware" target="_blank">open-source hardware</a> and fostering a more inclusive and engaged community.
+    </p>
+    <p>
+      These communities have contributed their expertise, ideas, and innovations, making MLAB a platform for knowledge sharing and collaboration.
+    </p>
+
+    <h2 class="mt-5">MLAB Today</h2>
+    <p>
+      Today, MLAB is not only a tool for development and testing but also a resource for education and inspiration for a new generation of engineers and scientists. Its story continues with every new module, article, and project created and shared by the community.
+    </p>
+
+    <div style="display:flex;justify-content: center;">
+
+    <div class="image-frame" style="width:48%;">
+        <img src="/static/media/about/detector.jpg" alt="mlab" style="width:100%">
+        <div class="image-caption"></div>
+    </div>
+
+    <div class="image-frame" style="width:48%;">
+        <img src="/static/media/about/baloon.jpg" alt="baloon" style="width:100%">
+        <div class="image-caption">  </div>
+    </div>
+
+
+    </div>
+
+<div style="display:flex;justify-content: center;">
+
+    <div class="image-frame" style="width:96%;">
+        <img src="/static/media/about/baloon_start.jpg" alt="mlab" style="width:100%">
+        <div class="image-caption"></div>
+    </div>
+</div>
+
+
+  </div>
+
+{% end %}
+

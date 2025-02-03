@@ -123,6 +123,10 @@ class permalink(BaseHandler):
         images = glob.glob(tornado.options.options.mlab_repos+module_data['root']+"doc/img/*")
         self.render("modules.detail.hbs", module=module, module_data=module_data, images = images, documents=documents, assembly_gh_link = assembly_gh_link)
 
+class about(BaseHandler):
+    def get(self):
+        self.render("about.hbs")
+
 class home(BaseHandler):
     #@asynchronous
     def get(self, data=None):
