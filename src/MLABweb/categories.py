@@ -1,7 +1,7 @@
 categories = [
 
     {
-        '_id': 'power-sw',
+        '_id': 'power-switch',
         'name': "Power switches",
         'description': "Power switches"
     },{
@@ -24,7 +24,7 @@ categories = [
         '_id': "translators",
         'name': "Translators",
     },{
-        '_id': "memories",
+        '_id': "memory",
         'name': "Memories",
     },{
         '_id': "mcu-arm",
@@ -39,8 +39,8 @@ categories = [
         '_id': "power-supply",
         'name': "Power supply",
     },{
-        '_id': "universial",
-        'name': "Universial parts",
+        '_id': "universal",
+        'name': "Universal parts",
     },{
         '_id': "human-interface",
         'name': "Human interfaces",

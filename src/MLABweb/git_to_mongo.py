@@ -64,7 +64,7 @@ categories = [
         'code': 'power_supply',
         'tags': []
     },{
-        'name': 'Universial parts',
+        'name': 'Universal parts',
         'code': 'universal',
         'tags': []
     },{
