@@ -117,11 +117,10 @@ def assembly_gh_link(document):
 class permalink(BaseHandler):
     #@asynchronous
     def get(self, module = None):
-        print(module)
-        module_data = self.db_web.Modules.find({"_id": module})[0]
-        documents = glob2.glob(tornado.options.options.mlab_repos+module_data['root']+"//**/*.pdf")
-        images = glob.glob(tornado.options.options.mlab_repos+module_data['root']+"doc/img/*")
-        self.render("modules.detail.hbs", module=module, module_data=module_data, images = images, documents=documents, assembly_gh_link = assembly_gh_link)
+        if not module or not self.db_web.Modules.find({"_id": module}).count():
+            self.redirect("/modules")
+            return
+        self.redirect("/module/{}/".format(module))
 
 class about(BaseHandler):
     def get(self):
