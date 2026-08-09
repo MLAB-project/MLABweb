@@ -1,3 +1,16 @@
+> **Poznámka k stavu této větve (2026-08-09):**
+> Tato větev je opuštěný prototyp z 12.–14. 2. 2023 (autor: Roman Dvořák), který zkoušel
+> přestavět katalog modulů MLAB jako statický web postavený na Hugo + tématu
+> [Doks](https://getdoks.org/) místo současné Flask aplikace na `master`. Historie větve je
+> naroubovaná historie upstream repozitáře [h-enk/doks](https://github.com/h-enk/doks)
+> (`git merge --allow-unrelated-histories`), proto zde nemá `master` a `mlab` společného předka.
+> Vlastní MLAB práce je jen 15 commitů: nastavení GitHub Pages deploy (`.github/workflows/hugo.yml`)
+> a skript `obtain_repos_data.sh` pro stažení dat modulů z GitHubu. Od 14. 2. 2023 bez další
+> aktivity — závislosti (Hugo 0.108, snapshot Doks z února 2023) jsou zastaralé a otevřené
+> Dependabot PR/alerty na této větvi neřeší nic, co by ovlivňovalo produkční web. Živý web je na
+> větvi `master`. Pokud by měl někdo zájem v tomto směru pokračovat, doporučuje se začít znovu
+> s aktuální verzí Doks/Hugo místo aktualizace této větve.
+
 <p align="center">
   <a href="https://getdoks.org/">
     <img alt="Doks" src="https://doks.netlify.app/doks.svg" width="60">
