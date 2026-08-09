@@ -3,56 +3,56 @@
 MLAB home page with the interactive catalog of [MLAB modules](https://github.com/MLAB-modules).
 
 
-## Použití 
+## Usage
 
-Jednotlivé položky katalogu modulů jsou na webu zobrazovány na základě dvou předpokladů:
- - Modul je umístěn v GitHub organizaci [MLAB-modules](https://github.com/MLAB-modules)
- - Modul obsahuje yaml soubor s metadaty pro zobrazení na webu. Soubor se musí nacházet v `/doc/metadata.yaml`.
+Individual entries in the module catalog are shown on the website based on two assumptions:
+ - The module is located in the [MLAB-modules](https://github.com/MLAB-modules) GitHub organization.
+ - The module contains a yaml file with metadata for display on the website. The file must be located at `/doc/metadata.yaml` (see the [MODUL01](https://github.com/mlab-modules/MODUL01) template repository, which is used to create new modules and already includes this file).
 
-Při splnění těchto podmínek bude modul na webu automaticky zobrazen. Zobrazení nebo aktualizace dat může nějakou dobu trvat. Pokud se nic nestane do jedné hodiny od provedení úpravy, je potřeba analyzovat možné problémy popřípadě kontaktovat správce webu. 
+Once these conditions are met, the module will be shown on the website automatically. Displaying or refreshing the data may take some time. If nothing happens within an hour of making the change, the possible issues should be investigated, or the website administrator should be contacted.
 
 
-### Automatická aktualizace dat
-Pro minimalizaci množství kroků potřebných pro zobrazení modulu na webu se snažíme maximum procesů automatizovat. K tomu slouží GitHub actions workflow, které jsme si naprogramovaly pro tyto účely. Actions postupy typicky aktualizujeme způsobem, že v repozitáři modulu máme submodul [/doc/assets/](https://github.com/MLAB-project/documents), který obsahuje jednotlivá actions potřebná pro správné fungování repozitáře. 
+### Automatic data update
+To minimize the number of steps needed to get a module shown on the website, we try to automate as much of the process as possible. This is handled by GitHub Actions workflows that we wrote for this purpose. These workflows are typically updated by keeping a submodule, [/doc/assets/](https://github.com/MLAB-project/documents), in each module repository, which contains the individual actions needed for the repository to work correctly.
 
 
 ### Metadata yaml
 
-Zde je základní struktura yaml souboru.
-Flag `<G:` značí, že hodnota je generovaná automaticky na základě github actions. Tato hodnota může být kdykoliv automaticky přepsána. 
-Flag `<U:` značí, že je to uživatelsky zadávaná hodnoda. 
+Below is the basic structure of the yaml file.
+The `<G:` flag marks a value that is generated automatically by GitHub Actions. This value can be automatically overwritten at any time.
+The `<U:` flag marks a value that is entered by the user.
 
 ```
-description: <G: Popis modulu, cca 250 znaků, generovaný z github popisu>
-github_branch: <G: Výchozí větev na githubu>
+description: <G: Module description, about 250 characters, generated from the GitHub description>
+github_branch: <G: Default branch on GitHub>
 github_branches: 
-- <G: Seznam větví v repozitáři>
-github_repo: <G: Název repozitáře>
-github_url: <G: URL adresa k repozitáři>
-homepage: <U: true/false, má být modul zobrazen na úvodní stránce webu? >
-image_title: <U: Jaký obrázek má být zobrazen na přehledu modulů? >
+- <G: List of branches in the repository>
+github_repo: <G: Repository name>
+github_url: <G: URL address of the repository>
+homepage: <U: true/false, should the module be shown on the website's homepage?>
+image_title: <U: Which image should be shown in the module overview?>
 images:
-- <G: Seznam obrázků v repozitáři>
-issues: <G: Počet otevřených issue>
-mark: <U: Hodnocení kvality modulu, číslo 0-100)
-mod_ibom: <G: Cesta k ibom souboru>
-mod_scheme: <G: Cesta ke schématu>
+- <G: List of images in the repository>
+issues: <G: Number of open issues>
+mark: <U: Quality rating of the module, a number 0-100)
+mod_ibom: <G: Path to the ibom file>
+mod_scheme: <G: Path to the schematic>
 tags:
-- <G: Seznam tagů, generovánoz z github toppics>
-title: <G: Název modulu - generováno z názvu repozitáře>
-updated: <G: čas aktualizace>
+- <G: List of tags, generated from GitHub topics>
+title: <G: Module name - generated from the repository name>
+updated: <G: Time of the last update>
 ```
 
-#### Stav a kvalita modulů
-Na webu je zelený proužek a filtr, kterým lze vybírat stav modulů:
-![obrazek](https://github.com/MLAB-project/MLABweb/assets/5196729/8b603185-a976-4acb-b256-cd5631cbcdd0)
+#### Module status and quality
+The website has a green bar and a filter that can be used to select modules by status:
+![image](https://github.com/MLAB-project/MLABweb/assets/5196729/8b603185-a976-4acb-b256-cd5631cbcdd0)
 
-To je v yaml souboru parametr 'status', který může mít hodnotu 1-5, pokud není uvedena, tak se aplikuje 2.
-Hodnota 4 (replaced) se automaticky nastaví ve webserveru v případě, že součástka má nastavený atribut [replaced](https://github.com/mlab-modules/USB232R01/blob/USB232R01B/doc/metadata.yaml#L24)
+This corresponds to the `status` parameter in the yaml file, which can have a value of 1-5; if it is not specified, 2 is applied.
+Value 4 (replaced) is set automatically by the webserver if the module has the [replaced](https://github.com/mlab-modules/USB232R01/blob/USB232R01B/doc/metadata.yaml#L24) attribute set.
 
-Pak existuje hodonota 'mark', což by taktéž mělo odrážet stav modulu ve smyslu jak moc má dobrou dokumentaci, jak moc je ten modul kompletní. Neexistuje ale nějaký popis toho, co odpovídá jakému číslu. Je to rozsah 0-100, tuším, že ty moduly s dobrou dokumentací mají hodnocení okolo 80-90 (já tam nechávám nějakou rezervu). Zde předpokládám, že tohle číslo bude způsobovat výchozí řazení na webu.
+There is also the `mark` value, which is likewise meant to reflect the state of the module in terms of how good its documentation is and how complete the module is. However, there is no defined description of what corresponds to which number. It is a range of 0-100; modules with good documentation seem to get a rating around 80-90 (I leave some headroom there). This number is assumed to drive the default sort order on the website.
 
-Další parametr je ```homepage: true/false```, což způsobí, že se to zobrazí na úvodní stránce, Tam mám odhad, že by nemělo být více než cca 12 modulů. 
+Another parameter is `homepage: true/false`, which causes the module to be shown on the homepage. There, the estimate is that there should be no more than about 12 modules.
 
-### Kategorie
-Na webu jsou zobrazeny předvybrané kategorie, které jsou provázány z github topics. Seznam kategorií, které jsou zobrazeny v horním menu je [zde](/src/MLABweb/categories.py). V souboru s metadaty to odpovídá položce `tags`. 
+### Categories
+The website shows a preselected set of categories that are linked to GitHub topics. The list of categories shown in the top menu is [here](/src/MLABweb/categories.py). In the metadata file, this corresponds to the `tags` entry.
