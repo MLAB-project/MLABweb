@@ -1,3 +1,9 @@
+# MLAB module-quality assessment cache/output (issue #47) - run artifacts,
+# not source. Regenerate with src/mlabtools/assess_module_quality.py.
+/.quality_cache/
+/report.csv
+/report.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
