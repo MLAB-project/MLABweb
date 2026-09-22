@@ -18,20 +18,20 @@ then list / not a listing candidate. The *why* and the actual scoring
 rubric live in [`module_quality_rubric.md`](module_quality_rubric.md) —
 read that once, you don't need to re-read it to use the tool day to day.
 
-Two ways to get the judged part of the score (photo appearance/description
-stylistics/consistency) filled in:
-
-1. **The `mlab-quality-mark` Claude Code skill** (`.claude/skills/mlab-quality-mark/SKILL.md`)
-   — Claude Code reads each module's README + photo itself and scores it.
-   **Use this one if you don't have a separate `ANTHROPIC_API_KEY`** (e.g.
-   a Claude Code subscription with no standalone API access — this is the
-   normal case).
-2. **`assess_module_quality.py score`** — calls the Anthropic API directly.
-   Only works if `ANTHROPIC_API_KEY` is set in your environment.
+The judged part of the score (photo appearance/description stylistics/
+consistency) is filled in by the **`mlab-quality-mark` Claude Code skill**
+(`.claude/skills/mlab-quality-mark/SKILL.md`) — Claude Code reads each
+module's README + photo itself and scores it. There is no API-key path:
+this account has no standalone `ANTHROPIC_API_KEY`, only Claude Code
+access, so **this entire toolset only runs as a Claude Code session** —
+interactive, self-paced with `/loop`, or a scheduled routine (see
+[Day-to-day](#day-to-day-scoring-more-modules) below) — never as an
+unattended script hitting an API on its own.
 
 Everything else (finding modules, downloading their data, building the
-report, writing marks back to GitHub) is the same either way — one script,
-`assess_module_quality.py`, run from anywhere inside this repo.
+report, writing marks back to GitHub) is plain Python: one script,
+`assess_module_quality.py`, run from a Bash tool call inside a Claude Code
+session, or by hand from anywhere inside this repo.
 
 ## One-time setup: populate the cache
 
@@ -90,11 +90,18 @@ shows up when Claude Code is running inside this repo). Each invocation:
    rubric, and saves the result.
 4. Tells you how many it did and what's left.
 
-**Just keep re-invoking it** (or ask Claude to keep going, or `/loop` it)
-until nothing's left. There are 298 modules total; as of this writing 27
-are scored and ~256 remain (the other 15 already have a human-set mark and
-are skipped by default). No need to do it all in one sitting — it's fully
-resumable, nothing is lost between runs.
+**Easiest: `/loop /mlab-quality-mark`** — lets a Claude Code session
+self-pace through batch after batch on its own until nothing's left (or
+you stop it). Since there's no API key, this recurring "keep calling the
+skill" loop *is* the automation here — there's no separate unattended
+process to set up. Plain re-invocation works too if you'd rather stay in
+control of the pace: just run `/mlab-quality-mark` again whenever.
+
+There are 298 modules total; as of this writing 27 are scored and ~256
+remain (the other 15 already have a human-set mark and are skipped by
+default). No need to do it all in one sitting — it's fully resumable,
+nothing is lost between runs or across sessions (the cache is on disk, not
+in the conversation).
 
 To check where things stand without scoring anything:
 

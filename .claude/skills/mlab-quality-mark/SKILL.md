@@ -12,13 +12,12 @@ allowed-tools:
 
 Fills in the judged part of the module-quality rubric (photos appearance,
 description stylistics, text/image consistency) for modules in the
-`mlab-modules` org, using **your own** multimodal reading — not an API
-call. This exists specifically because the user's Claude access is through
-Claude Code, with no separate `ANTHROPIC_API_KEY` to call the Anthropic API
-directly (see `src/mlabtools/assess_module_quality.py score`, which does
-the same job the API way for anyone who does have a key — both paths
-produce the identical `<name>.score.json` schema, so `report` works either
-way).
+`mlab-modules` org, using **your own** multimodal reading. There is no
+API-based alternative to this skill: the user's Claude access is through
+Claude Code only, with no standalone `ANTHROPIC_API_KEY`. That means this
+whole toolset only runs as a Claude Code session — interactive, `/loop`'d
+through a batch backlog, or a scheduled routine — never as an unattended
+script hitting an API. Don't suggest an API-key path; there isn't one.
 
 **Read the rubric and calibration before scoring anything, every time you
 run this skill** — don't rely on remembering it from a previous run:

@@ -12,6 +12,20 @@ update_github_*.py scripts in this directory: plain `requests` against the
 GitHub Contents API, a GitHub token on the command line / in GITHUB_TOKEN,
 metadata.yaml round-tripped through yaml.safe_load/safe_dump.
 
+There is deliberately no API-based scoring path here. Filling in the
+judged sub-scores (photo appearance, description stylistics, text/image
+consistency) needs a multimodal LLM call per module, but this account has
+no standalone ANTHROPIC_API_KEY -- Claude access is Claude Code only. So
+that step is the `mlab-quality-mark` Claude Code skill
+(.claude/skills/mlab-quality-mark/SKILL.md), not a command in this file:
+it reads the rubric, reads each module's README + photo itself, and
+writes the same <name>.score.json this script's other commands read from.
+Practical consequence: this whole toolset only runs as a Claude Code
+session (interactive, /loop'd, or a scheduled routine) -- never as a bare
+cron job hitting an API with no LLM attached, because there's no key to
+give it. Don't reintroduce an API-key code path without one actually being
+available; see src/mlabtools/README.md for how everything fits together.
+
 USAGE
 -----
 All commands default --cache-dir to <repo root>/.quality_cache (gitignored
@@ -26,24 +40,16 @@ All commands default --cache-dir to <repo root>/.quality_cache (gitignored
       --out modules.json
 
   # 2. Fetch metadata.yaml + README.md + title image + deterministic
-  #    metrics for every discovered module, cached to disk so re-runs are
-  #    cheap and the LLM step can be retried without re-hitting GitHub.
+  #    metrics for every discovered module, cached to disk. Deterministic
+  #    sub-metrics (image count/resolution/blur, description length/
+  #    structure) come from this step alone -- no LLM involved.
   python3 assess_module_quality.py fetch --token $GITHUB_TOKEN \
       --modules modules.json
 
-  # 3. Score every cached module with an LLM judging the rubric's
-  #    "appearance", "stylistics" and "consistency" sub-metrics.
-  #    Requires ANTHROPIC_API_KEY. Deterministic sub-metrics (image count/
-  #    resolution/blur, description length/structure) don't need this step
-  #    at all — `report` will emit them even with no key configured, just
-  #    with the judged sub-scores left null.
-  #    NOTE: if you don't have an ANTHROPIC_API_KEY (e.g. Claude Code
-  #    subscription with no separate API access), use the
-  #    `mlab-quality-mark` Claude Code skill instead — it does this step
-  #    via Claude Code's own multimodal reading, writing the exact same
-  #    <name>.score.json files this command would, so `report` below
-  #    works identically either way.
-  ANTHROPIC_API_KEY=... python3 assess_module_quality.py score
+  # 3. Score the judged sub-metrics: run the /mlab-quality-mark Claude Code
+  #    skill (repeatedly, in batches, until nothing's left -- see
+  #    `progress` below). Not a command in this script; see the skill file
+  #    and src/mlabtools/README.md.
 
   # 4. Emit the triage report (this is the actual deliverable — read this,
   #    not the metadata write, to decide what to fix vs. list).
@@ -291,121 +297,16 @@ def list_module_bundle_files(cache_dir):
 
 
 # --------------------------------------------------------------------------
-# 3. score (LLM judgment — needs ANTHROPIC_API_KEY)
-# --------------------------------------------------------------------------
-
-SCORE_PROMPT_TEMPLATE = """\
-You are scoring one hardware module's listing quality for MLAB, an open
-hardware module catalog. Follow this rubric exactly:
-
-{rubric}
-
-Calibration anchors (already-scored real examples, use these to calibrate
-your scale — do not just default to the middle):
-
-{anchors}
-
-Now score this module. Its title image is attached (if present).
-
-Module: {name}
-Description (short blurb): {description}
-README.md:
----
-{readme}
----
-Deterministic signals already computed (you don't need to re-derive these,
-factor them in): {deterministic}
-
-Respond with ONLY a JSON object, no prose, no markdown fences:
-{{
-  "photos": <0-100 int>,
-  "description": <0-100 int>,
-  "consistency": <0-100 int>,
-  "reasoning": "<one or two sentences citing the specific thing that drove the score>",
-  "flags": ["<short tags like 'qr-code-only-image', 'ai-draft-artifact', 'thin-readme', 'render-hides-product'>"]
-}}
-"""
-
-
-def call_anthropic(api_key, prompt, image_b64, image_media_type):
-    content = [{"type": "text", "text": prompt}]
-    if image_b64:
-        content.insert(0, {
-            "type": "image",
-            "source": {"type": "base64", "media_type": image_media_type, "data": image_b64},
-        })
-    r = requests.post(
-        "https://api.anthropic.com/v1/messages",
-        headers={
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json",
-        },
-        json={
-            "model": "claude-sonnet-4-5",
-            "max_tokens": 500,
-            "messages": [{"role": "user", "content": content}],
-        },
-        timeout=60,
-    )
-    r.raise_for_status()
-    text = r.json()["content"][0]["text"]
-    return json.loads(text)
-
-
-def media_type_for(path):
-    ext = path.lower().rsplit(".", 1)[-1]
-    return {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
-            "gif": "image/gif", "webp": "image/webp"}.get(ext)
-
-
-def cmd_score(args):
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("ANTHROPIC_API_KEY not set — cannot run the judged sub-scores.\n"
-              "`report` still works without this step: it will just leave "
-              "photos/description/consistency null and show only the "
-              "deterministic signals for triage.", file=sys.stderr)
-        return 1
-
-    rubric = open(RUBRIC_PATH).read()
-    calibration = json.load(open(CALIBRATION_PATH))
-    anchors_text = json.dumps(calibration["anchors"], indent=2) + "\n\nCaveat: " + calibration["caveat"]
-
-    files = list_module_bundle_files(args.cache_dir)
-    for i, fn in enumerate(files):
-        name = fn[:-5]
-        score_path = os.path.join(args.cache_dir, f"{name}.score.json")
-        if os.path.exists(score_path) and not args.rescore:
-            print(f"  [{i+1}/{len(files)}] {name}: already scored, skip", file=sys.stderr)
-            continue
-
-        record = json.load(open(os.path.join(args.cache_dir, fn)))
-        meta = record["metadata"]
-        prompt = SCORE_PROMPT_TEMPLATE.format(
-            rubric=rubric,
-            anchors=anchors_text,
-            name=name,
-            description=meta.get("description", ""),
-            readme=record["readme"][:6000],
-            deterministic=json.dumps(record["deterministic"]),
-        )
-        media_type = media_type_for(record["image_path"]) if record.get("image_b64") else None
-        try:
-            print(f"  [{i+1}/{len(files)}] {name}: scoring...", file=sys.stderr)
-            result = call_anthropic(api_key, prompt, record.get("image_b64") if media_type else None, media_type)
-            json.dump(result, open(score_path, "w"), indent=2)
-        except Exception as e:
-            print(f"    FAILED: {e}", file=sys.stderr)
-        time.sleep(1)  # crude rate limiting
-
-
-# --------------------------------------------------------------------------
-# 3b. skill-facing helpers: show / extract-image / record-score / progress
+# 3. skill-facing helpers: show / extract-image / record-score / progress
 #
-# These exist so the mlab-quality-mark Claude Code skill (used when no
-# ANTHROPIC_API_KEY is available -- see cmd_score above) has clean, safe
-# primitives instead of ad-hoc inline Python in the skill's instructions.
+# There is no API-based scoring command in this file -- this account has
+# no standalone ANTHROPIC_API_KEY, so the judged sub-scores (photo
+# appearance, description stylistics, text/image consistency) are filled
+# in by the mlab-quality-mark Claude Code skill
+# (.claude/skills/mlab-quality-mark/SKILL.md) instead, which reads the
+# rubric and each module's README/photo directly. These four commands
+# exist so that skill has clean, safe primitives instead of ad-hoc inline
+# Python in its instructions.
 # `show` never dumps image_b64 to stdout -- that field is only ever a few
 # hundred KB to 1MB+ of base64, and printing it would blow the judging
 # model's context for no benefit (it can't "see" base64 text; it needs an
@@ -659,11 +560,6 @@ def main():
     f.add_argument("--refetch", action="store_true")
     f.set_defaults(func=cmd_fetch)
 
-    s = sub.add_parser("score")
-    s.add_argument("--cache-dir", default=QUALITY_CACHE_DEFAULT)
-    s.add_argument("--rescore", action="store_true")
-    s.set_defaults(func=cmd_score)
-
     r = sub.add_parser("report")
     r.add_argument("--cache-dir", default=QUALITY_CACHE_DEFAULT)
     r.add_argument("--out-csv", default=os.path.join(QUALITY_CACHE_DEFAULT, "report.csv"))
@@ -710,11 +606,13 @@ def main():
         print("Need a GitHub token: --token or $GITHUB_TOKEN", file=sys.stderr)
         sys.exit(1)
     result = args.func(args)
-    # Only an explicit int return (e.g. cmd_score's "1" for "no API key") is
-    # a real exit code. cmd_report returns its row list for reuse by
-    # cmd_write_back -- sys.exit(a_list) would dump the whole thing to
-    # stderr and exit 1, which is not an error, just Python's sys.exit()
-    # behavior for a non-int/non-None argument.
+    # cmd_report returns its row list for reuse by cmd_write_back (which
+    # calls it directly, not through this dispatch) -- sys.exit(a_list)
+    # would dump the whole thing to stderr and exit 1, which is not an
+    # error, just Python's sys.exit() behavior for a non-int/non-None
+    # argument. Guard against that here; a command that needs a real
+    # non-zero exit calls sys.exit() itself instead of returning one
+    # (see cmd_record_score's validation failure).
     sys.exit(result if isinstance(result, int) else 0)
 
 
